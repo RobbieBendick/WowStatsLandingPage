@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react'
-import { getCurrentUser, loginWithDiscord, clearUser, checkSubscription } from '../utils/auth'
+import { useState } from 'react'
+import { loginWithDiscord, clearUser } from '../utils/auth'
 import { createCheckoutSession, redirectToCheckout } from '../utils/stripe'
-import type { DiscordUser } from '../utils/auth'
+import { useSubscription } from '../hooks/useSubscription'
 
 interface PricingOption {
   id: string
@@ -15,71 +15,58 @@ interface PricingOption {
 
 const pricingOptions: PricingOption[] = [
   {
+    id: 'free',
+    name: 'Free',
+    price: 0,
+    priceId: '', // No price ID for free tier
+    features: ['Basic Statistics', 'Match History', 'Character Tracking', 'Community Support']
+  },
+  {
     id: '1-month',
-    name: '1 Month',
+    name: 'Pro - 1 Month',
     price: 2.99,
     priceId: 'price_xxxxx', // TODO: Replace with your Stripe Price ID
-    features: ['All Pro Features', 'Monthly Updates', 'Priority Support']
+    features: ['Death Logs', 'CC Timelines', 'Resists & Misses', 'Monthly Updates', 'Priority Support']
   },
   {
     id: '3-month',
-    name: '3 Months',
+    name: 'Pro - 3 Months',
     price: 7.99,
     priceId: 'price_xxxxx', // TODO: Replace with your Stripe Price ID
-    features: ['All Pro Features', 'Quarterly Updates', 'Priority Support'],
+    features: ['Death Logs', 'CC Timelines', 'Resists & Misses', 'Quarterly Updates', 'Priority Support'],
     savingsPercent: 11,
     isPopular: true
-  },
-  {
-    id: '6-month',
-    name: '6 Months',
-    price: 13.99,
-    priceId: 'price_xxxxx', // TODO: Replace with your Stripe Price ID
-    features: ['All Pro Features', 'Bi-Annual Updates', 'Priority Support'],
-    savingsPercent: 22
   }
 ]
 
 export default function Pricing() {
-  const [user, setUser] = useState<DiscordUser | null>(null)
+  const { user, isSubscribed, isLoading: checkingAuth } = useSubscription()
   const [loading, setLoading] = useState(false)
-  const [checkingAuth, setCheckingAuth] = useState(true)
-
-  useEffect(() => {
-    const loadUser = () => {
-      const currentUser = getCurrentUser()
-      if (currentUser) {
-        setUser(currentUser)
-        checkSubscription(currentUser.id).then(isSubscribed => {
-          setUser({ ...currentUser, subscribed: isSubscribed })
-        })
-      } else {
-        setUser(null)
-      }
-      setCheckingAuth(false)
-    }
-
-    loadUser()
-
-    // Listen for auth changes
-    window.addEventListener('userAuthChange', loadUser)
-    return () => {
-      window.removeEventListener('userAuthChange', loadUser)
-    }
-  }, [])
 
   const handleSubscribe = async (option: PricingOption) => {
     try {
       setLoading(true)
-      let currentUser = getCurrentUser()
       
-      if (!currentUser) {
+      // Free tier - just download or show message
+      if (option.id === 'free') {
+        // Redirect to download or show free tier info
+        const downloadLink = document.querySelector('a[href*="releases"]') as HTMLAnchorElement
+        if (downloadLink) {
+          downloadLink.click()
+        } else {
+          window.location.href = 'https://github.com/WoW-Stats/WoWStatsReleases/releases/latest'
+        }
+        setLoading(false)
+        return
+      }
+      
+      if (!user) {
         sessionStorage.setItem('pending_price_id', option.priceId)
         loginWithDiscord()
         return
       }
 
-      const checkoutUrl = await createCheckoutSession(currentUser.id, option.priceId)
+      const checkoutUrl = await createCheckoutSession(user.id, option.priceId)
       redirectToCheckout(checkoutUrl)
     } catch (error) {
       console.error('Subscription error:', error)
@@ -95,7 +82,6 @@ export default function Pricing() {
 
   const handleLogout = () => {
     clearUser()
-    setUser(null)
     // Dispatch event to update Navbar
     window.dispatchEvent(new Event('userAuthChange'))
   }
@@ -111,7 +97,8 @@ export default function Pricing() {
         {user && (
           <div className="user-info" style={{ marginBottom: '20px', padding: '10px', background: 'rgba(30, 30, 47, 0.4)', borderRadius: '8px', color: 'var(--text-primary)' }}>
             <p>Logged in as: <strong>{user.username}</strong></p>
-            {user.subscribed && <p style={{ color: '#4ade80', fontWeight: 'bold' }}>✓ Subscribed</p>}
+            {isSubscribed && <p style={{ color: '#4ade80', fontWeight: 'bold' }}>✓ Pro Subscribed</p>}
+            {!isSubscribed && <p style={{ color: 'var(--text-secondary)' }}>Free Plan</p>}
             <button onClick={handleLogout} className="pricing-cta" style={{ marginTop: '10px', width: 'auto' }}>Logout</button>
           </div>
         )}
@@ -127,7 +114,23 @@ export default function Pricing() {
               <div className="pricing-header">
                 <h3 className="pricing-name">{option.name}</h3>
                 <div className="pricing-price">
-                  <div className="price-amount">${option.price}</div>
+                  {option.price === 0 ? (
+                    <div className="price-amount">Free</div>
+                  ) : (
+                    <>
+                      <div className="price-amount">${option.price}</div>
+                      {option.id === '1-month' && (
+                        <div className="price-breakdown" style={{ marginTop: '0.5rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
+                          billed monthly
+                        </div>
+                      )}
+                      {option.id === '3-month' && (
+                        <div className="price-breakdown" style={{ marginTop: '0.5rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
+                          billed every 3 months
+                        </div>
+                      )}
+                    </>
+                  )}
                 </div>
               </div>
               <ul className="pricing-features-list" style={{ marginTop: '1rem', marginBottom: '2rem' }}>
@@ -140,10 +143,14 @@ export default function Pricing() {
               <button
                 onClick={() => handleSubscribe(option)}
                 disabled={loading}
-                className={`pricing-cta ${option.isPopular ? 'popular' : ''}`}
-                style={{ opacity: loading ? 0.6 : 1, cursor: loading ? 'not-allowed' : 'pointer' }}
+                className={`pricing-cta ${option.isPopular ? 'popular' : ''} ${option.id === 'free' ? 'free-tier' : ''}`}
+                style={{ 
+                  opacity: loading ? 0.6 : 1, 
+                  cursor: loading ? 'not-allowed' : 'pointer',
+                  ...(option.id === 'free' ? { background: 'rgba(74, 222, 128, 0.1)', borderColor: 'rgba(74, 222, 128, 0.3)' } : {})
+                }}
               >
-                {loading ? 'Processing...' : user ? 'Subscribe' : 'Login to Subscribe'}
+                {loading ? 'Processing...' : option.id === 'free' ? 'Download Free' : user ? 'Subscribe' : 'Login to Subscribe'}
               </button>
             </div>
           ))}

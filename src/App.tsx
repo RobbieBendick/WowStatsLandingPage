@@ -7,7 +7,7 @@ import About from './components/About'
 import Pricing from './components/Pricing'
 import CTA from './components/CTA'
 import Footer from './components/Footer'
-import { saveUser, getCurrentUser, checkSubscription } from './utils/auth'
+import { saveUser, refreshSubscription } from './utils/auth'
 import type { DiscordUser } from './utils/auth'
 import './style.css'
 
@@ -23,34 +23,23 @@ function App() {
         const userJSON = atob(userParam)
         const user: DiscordUser = JSON.parse(userJSON)
         
-        // Check subscription status
-        checkSubscription(user.id).then(isSubscribed => {
-          const userWithSubscription = { ...user, subscribed: isSubscribed }
-          saveUser(userWithSubscription)
-          
+        // Save user first
+        saveUser(user)
+        
+        // Refresh subscription status (will update user in localStorage)
+        refreshSubscription().then(() => {
           // Clean up URL
           window.history.replaceState({}, document.title, window.location.pathname)
           
           // Dispatch event to update all components
           window.dispatchEvent(new Event('userAuthChange'))
-          
-          // Reload to update UI
-          window.location.reload()
         })
       } catch (error) {
         console.error('Failed to parse user data from callback:', error)
       }
     } else {
       // Check if user is already logged in and refresh subscription status
-      const currentUser = getCurrentUser()
-      if (currentUser) {
-        checkSubscription(currentUser.id).then(isSubscribed => {
-          if (isSubscribed !== currentUser.subscribed) {
-            const updatedUser = { ...currentUser, subscribed: isSubscribed }
-            saveUser(updatedUser)
-          }
-        })
-      }
+      refreshSubscription()
     }
   }, [])
 

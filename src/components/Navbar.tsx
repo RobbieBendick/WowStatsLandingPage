@@ -1,32 +1,15 @@
 import { useState, useEffect } from 'react'
 import { useLatestRelease } from '../hooks/useLatestRelease'
-import { getCurrentUser, loginWithDiscord, clearUser } from '../utils/auth'
-import type { DiscordUser } from '../utils/auth'
+import { loginWithDiscord, clearUser } from '../utils/auth'
+import { useSubscription } from '../hooks/useSubscription'
+
+// Get base URL for GitHub Pages compatibility
+const baseUrl = import.meta.env.BASE_URL
 
 export default function Navbar() {
   const { downloadUrl, loading } = useLatestRelease()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [user, setUser] = useState<DiscordUser | null>(null)
-
-  useEffect(() => {
-    // Check if user is logged in
-    const currentUser = getCurrentUser()
-    setUser(currentUser)
-
-    // Listen for storage changes (when user logs in/out in another tab)
-    const handleStorageChange = () => {
-      setUser(getCurrentUser())
-    }
-    window.addEventListener('storage', handleStorageChange)
-    
-    // Also listen for custom event when user logs in/out in same tab
-    window.addEventListener('userAuthChange', handleStorageChange)
-
-    return () => {
-      window.removeEventListener('storage', handleStorageChange)
-      window.removeEventListener('userAuthChange', handleStorageChange)
-    }
-  }, [])
+  const { user, isSubscribed } = useSubscription()
 
   const handleLogin = () => {
     loginWithDiscord()
@@ -72,7 +55,7 @@ export default function Navbar() {
       <nav className="navbar">
         <div className="nav-container">
           <div className="logo">
-            <img src="/icons/ws-icon.png" alt="WowStats Logo" className="logo-img" />
+            <img src={`${baseUrl}icons/ws-icon.png`} alt="WowStats Logo" className="logo-img" />
             <span>WowStats</span>
           </div>
           <button 
@@ -99,8 +82,20 @@ export default function Navbar() {
           </a>
           {user ? (
             <>
-              <span className="nav-user" style={{ color: 'var(--text-secondary)', marginRight: '1rem' }}>
+              <span className="nav-user" style={{ color: 'var(--text-secondary)', marginRight: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 {user.username}
+                {isSubscribed && (
+                  <span style={{ 
+                    background: '#4ade80', 
+                    color: 'white', 
+                    padding: '0.2rem 0.5rem', 
+                    borderRadius: '4px', 
+                    fontSize: '0.75rem',
+                    fontWeight: 'bold'
+                  }}>
+                    PRO
+                  </span>
+                )}
               </span>
               <button 
                 onClick={handleLogout}

@@ -1,20 +1,23 @@
 import { useState, useEffect } from 'react'
 
+// Get base URL for GitHub Pages compatibility
+const baseUrl = import.meta.env.BASE_URL
+
 // Dashboard screenshots
 const dashboardViews = [
-  '/screenshots/dashboard/wowstats-dashboard-1.png',
-  '/screenshots/dashboard/wowstats-dashboard-2.png',
-  '/screenshots/dashboard/wowstats-dashboard-3.png',
+  `${baseUrl}screenshots/dashboard/wowstats-dashboard-1.png`,
+  `${baseUrl}screenshots/dashboard/wowstats-dashboard-2.png`,
+  `${baseUrl}screenshots/dashboard/wowstats-dashboard-3.png`,
 ]
 
 // Detailed match analysis
 const matchAnalysis = [
-  '/screenshots/match-pages/wowstats-recent-matches.png',
-  '/screenshots/match-pages/wowstats-cc-timeline.png',
-  '/screenshots/match-pages/wowstats-resisted-and-cc-timeline.png',
-  '/screenshots/match-pages/wowstats-resisted-spells.png',
-  '/screenshots/match-pages/wowstats-missed-spells.png',
-  '/screenshots/match-pages/wowstats-death-log.png',
+  `${baseUrl}screenshots/match-pages/wowstats-recent-matches.png`,
+  `${baseUrl}screenshots/match-pages/wowstats-cc-timeline.png`,
+  `${baseUrl}screenshots/match-pages/wowstats-resisted-and-cc-timeline.png`,
+  `${baseUrl}screenshots/match-pages/wowstats-resisted-spells.png`,
+  `${baseUrl}screenshots/match-pages/wowstats-missed-spells.png`,
+  `${baseUrl}screenshots/match-pages/wowstats-death-log.png`,
 ]
 
 const matchPages = matchAnalysis
