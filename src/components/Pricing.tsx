@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { loginWithDiscord, clearUser } from '../utils/auth'
+import { loginWithDiscord } from '../utils/auth'
 import { createCheckoutSession, redirectToCheckout } from '../utils/stripe'
 import { useSubscription } from '../hooks/useSubscription'
 
@@ -80,11 +80,6 @@ export default function Pricing() {
     loginWithDiscord()
   }
 
-  const handleLogout = () => {
-    clearUser()
-    // Dispatch event to update Navbar
-    window.dispatchEvent(new Event('userAuthChange'))
-  }
 
   if (checkingAuth) {
     return <div>Loading...</div>
@@ -94,14 +89,6 @@ export default function Pricing() {
     <section id="pricing" className="pricing">
       <div className="container">
         <h2 className="section-title">Pricing</h2>
-        {user && (
-          <div className="user-info" style={{ marginBottom: '20px', padding: '10px', background: 'rgba(30, 30, 47, 0.4)', borderRadius: '8px', color: 'var(--text-primary)' }}>
-            <p>Logged in as: <strong>{user.username}</strong></p>
-            {isSubscribed && <p style={{ color: '#4ade80', fontWeight: 'bold' }}>✓ Pro Subscribed</p>}
-            {!isSubscribed && <p style={{ color: 'var(--text-secondary)' }}>Free Plan</p>}
-            <button onClick={handleLogout} className="pricing-cta" style={{ marginTop: '10px', width: 'auto' }}>Logout</button>
-          </div>
-        )}
         <div className="pricing-grid">
           {pricingOptions.map((option) => (
             <div key={option.id} className={`pricing-card ${option.isPopular ? 'popular' : ''}`}>

@@ -16,7 +16,22 @@ function App() {
     // Handle OAuth callback
     const urlParams = new URLSearchParams(window.location.search)
     const userParam = urlParams.get('user')
+    const clientType = urlParams.get('client') // Check if this is a Tauri callback
     
+    // Check if we're in Tauri app - if so, don't do web redirect logic
+    const isTauri = typeof window !== 'undefined' && '__TAURI__' in window
+    
+    // If this is explicitly marked as a Tauri callback, redirect to the app
+    // This is a safety net in case a Tauri OAuth callback somehow ends up on the landing page
+    if (userParam && clientType === 'tauri' && !isTauri) {
+      // Redirect to Tauri app via deep link
+      const tauriRedirectURL = `wowstats://auth/callback?user=${userParam}`
+      console.log('Detected Tauri OAuth callback on landing page, redirecting to app')
+      window.location.href = tauriRedirectURL
+      return // Don't process as web callback
+    }
+    
+    // Normal web callback processing
     if (userParam) {
       try {
         // Decode base64 user data

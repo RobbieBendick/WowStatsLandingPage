@@ -4,6 +4,7 @@ export interface DiscordUser {
   id: string
   username: string
   email: string
+  avatar?: string
   subscribed: boolean
 }
 
