@@ -40,7 +40,7 @@ const pricingOptions: PricingOption[] = [
 ]
 
 export default function Pricing() {
-  const { user, isSubscribed, isLoading: checkingAuth } = useSubscription()
+  const { user, isLoading: checkingAuth } = useSubscription()
   const [loading, setLoading] = useState(false)
 
   const handleSubscribe = async (option: PricingOption) => {

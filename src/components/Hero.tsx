@@ -4,8 +4,8 @@ import { useCountUp } from '../hooks/useCountUp'
 export default function Hero() {
   const { downloadUrl, loading } = useLatestRelease()
 
-  const activeUsers = useCountUp({ end: 100, suffix: '+' })
-  const charactersTracked = useCountUp({ end: 500, suffix: '+' })
+  const activeUsers = useCountUp({ end: 1000, suffix: '+' })
+  const charactersTracked = useCountUp({ end: 4000, suffix: '+' })
   const dataPoints = useCountUp({ end: 100000, suffix: '+', duration: 2500 })
 
   const handleLearnMore = () => {
