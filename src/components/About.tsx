@@ -1,8 +1,8 @@
 const benefits = [
   {
     icon: '⚡',
-    title: 'Real-Time Sync',
-    description: 'Instant data synchronization keeps your stats always up to date',
+    title: 'Organized Match History',
+    description: 'Organize your match history by map, opponent, teammate, or specific classes. Filter and search through your entire match history with powerful tools.',
   },
   {
     icon: '🎨',

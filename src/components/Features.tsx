@@ -7,8 +7,8 @@ interface Feature {
 const features: Feature[] = [
   {
     icon: '📊',
-    title: 'Real-time Analytics',
-    description: "Track your character's performance with real-time statistics and detailed analytics.",
+    title: 'Organized Match History',
+    description: "Organize your match history by map, opponent, teammate, or specific classes. Filter and search through your entire match history with powerful tools.",
   },
   {
     icon: '⚔️',
