@@ -8,6 +8,7 @@ interface PricingOption {
   name: string
   price: number
   priceId: string
+  paymentLink?: string // Stripe Payment Link URL (alternative to priceId)
   features: string[]
   savingsPercent?: number
   isPopular?: boolean
@@ -25,17 +26,19 @@ const pricingOptions: PricingOption[] = [
     id: '1-month',
     name: 'Pro - 1 Month',
     price: 2.99,
-    priceId: 'price_xxxxx', // TODO: Replace with your Stripe Price ID
-    features: ['Death Logs', 'CC Timelines', 'Resists & Misses', 'Monthly Updates', 'Priority Support']
+    priceId: import.meta.env.VITE_ONE_MONTH_PRICE_ID,
+    paymentLink: import.meta.env.VITE_ONE_MONTH_PAYMENT_LINK, // Optional: Use payment link instead
+    features: ['Death Logs', 'CC Timelines', 'Resists & Misses', 'Monthly Updates', 'Priority Support'],
+    isPopular: true
   },
   {
     id: '3-month',
     name: 'Pro - 3 Months',
     price: 7.99,
-    priceId: 'price_xxxxx', // TODO: Replace with your Stripe Price ID
+    priceId: import.meta.env.VITE_THREE_MONTH_PRICE_ID,
+    paymentLink: import.meta.env.VITE_THREE_MONTH_PAYMENT_LINK,
     features: ['Death Logs', 'CC Timelines', 'Resists & Misses', 'Quarterly Updates', 'Priority Support'],
-    savingsPercent: 11,
-    isPopular: true
+    savingsPercent: 11
   }
 ]
 
@@ -59,10 +62,30 @@ export default function Pricing() {
         setLoading(false)
         return
       }
-      
+
+      // Require login before proceeding
       if (!user) {
-        sessionStorage.setItem('pending_price_id', option.priceId)
+        // Store the payment link or price ID to use after login
+        if (option.paymentLink) {
+          sessionStorage.setItem('pending_payment_link', option.paymentLink)
+        } else if (option.priceId) {
+          sessionStorage.setItem('pending_price_id', option.priceId)
+        }
         loginWithDiscord()
+        return
+      }
+
+      // If payment link is available, use it directly (simpler approach)
+      if (option.paymentLink) {
+        window.location.href = option.paymentLink
+        return
+      }
+      
+      // Validate price ID exists for checkout session approach
+      if (!option.priceId || option.priceId.trim() === '') {
+        alert('Price ID is missing. Please contact support.')
+        console.error('Price ID is missing for option:', option.id)
+        setLoading(false)
         return
       }
 
@@ -130,11 +153,10 @@ export default function Pricing() {
               <button
                 onClick={() => handleSubscribe(option)}
                 disabled={loading}
-                className={`pricing-cta ${option.isPopular ? 'popular' : ''} ${option.id === 'free' ? 'free-tier' : ''}`}
+                className={`pricing-cta ${option.isPopular ? 'popular' : ''}`}
                 style={{ 
                   opacity: loading ? 0.6 : 1, 
-                  cursor: loading ? 'not-allowed' : 'pointer',
-                  ...(option.id === 'free' ? { background: 'rgba(74, 222, 128, 0.1)', borderColor: 'rgba(74, 222, 128, 0.3)' } : {})
+                  cursor: loading ? 'not-allowed' : 'pointer'
                 }}
               >
                 {loading ? 'Processing...' : option.id === 'free' ? 'Download Free' : user ? 'Subscribe' : 'Login to Subscribe'}
