@@ -27,7 +27,7 @@ const pricingOptions: PricingOption[] = [
     name: 'Pro - 1 Month',
     price: 2.99,
     priceId: import.meta.env.VITE_ONE_MONTH_PRICE_ID,
-    paymentLink: import.meta.env.VITE_ONE_MONTH_PAYMENT_LINK, // Optional: Use payment link instead
+    // paymentLink: import.meta.env.VITE_ONE_MONTH_PAYMENT_LINK, // Optional: Use payment link instead
     features: ['Death Logs', 'CC Timelines', 'Resists & Misses', 'Monthly Updates', 'Priority Support'],
     isPopular: true
   },
@@ -36,7 +36,7 @@ const pricingOptions: PricingOption[] = [
     name: 'Pro - 3 Months',
     price: 7.99,
     priceId: import.meta.env.VITE_THREE_MONTH_PRICE_ID,
-    paymentLink: import.meta.env.VITE_THREE_MONTH_PAYMENT_LINK,
+    // paymentLink: import.meta.env.VITE_THREE_MONTH_PAYMENT_LINK,
     features: ['Death Logs', 'CC Timelines', 'Resists & Misses', 'Quarterly Updates', 'Priority Support'],
     savingsPercent: 11
   }
