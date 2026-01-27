@@ -7,8 +7,8 @@ interface Feature {
 const features: Feature[] = [
   {
     icon: '📊',
-    title: 'Organized Match History',
-    description: "Organize your match history by map, opponent, teammate, or specific classes. Filter and search through your entire match history with powerful tools.",
+    title: 'Match Insights & Trends',
+    description: "Identify patterns in your gameplay over time. See win rates by map, composition, teammate, and opponent to understand what’s working—and what isn’t.",
   },
   {
     icon: '⚔️',
