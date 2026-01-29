@@ -48,21 +48,35 @@ export const loginWithDiscord = () => {
    Subscription
 ========================= */
 
-// Always check backend (Stripe-backed)
-export const checkSubscription = async (
-  userId: string
-): Promise<boolean> => {
+interface SubscriptionStatus {
+  active: boolean
+  user_id: string
+  status: string
+  current_period_end?: string
+  cancel_at_period_end: boolean
+  cancellation_date?: string
+  stripe_subscription_id?: string
+}
+
+// Check subscription from backend
+export const checkSubscription = async (userId: string): Promise<boolean> => {
   try {
-    const res = await fetch(
-      `${API_URL}/api/subscription/check?id=${userId}`
-    )
-    console.log('ello')
-    if (!res.ok) return false
+    const res = await fetch(`${API_URL}/api/subscription/check`, {
+      method: 'POST', // use POST so we can send metadata properly
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user_id: userId }),
+    })
 
-    const data = await res.json()
-    console.log('data', data)
+    if (!res.ok) {
+      console.error('Subscription check failed:', await res.text())
+      return false
+    }
 
-    return Boolean(data.stripe_status === 'active')
+    const data: SubscriptionStatus = await res.json()
+    console.log('Subscription data:', data)
+
+    // active is already computed by backend
+    return Boolean(data.active)
   } catch (err) {
     console.error('Subscription check failed:', err)
     return false

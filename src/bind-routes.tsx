@@ -26,27 +26,24 @@ export const routes: IRoute[] = [
   {
     path: ROUTE_PATHS.success,
     element: <SuccessPage />,
-  }, 
+  },
   {
     path: ROUTE_PATHS.cancel,
     element: <div>Cancel</div>,
   },
- 
 ];
 
-
-
-export function BindRoutes(props: { children?: React.ReactNode }): JSX.Element {
+export function BindRoutes(): JSX.Element {
   return (
     <Router>
-        <Routes>
-        {routes.map((route) => {
+      <Routes>
+        {routes.map(route => {
           console.log('route', route);
           return (
             <Route key={route.path} path={route.path} element={route.element} />
           );
         })}
-        </Routes>
+      </Routes>
     </Router>
   );
 }
