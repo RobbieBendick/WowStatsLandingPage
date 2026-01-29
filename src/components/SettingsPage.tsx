@@ -9,10 +9,11 @@ export function SettingsPage() {
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
-  const { user, isLoading: isAuthLoading } = useAuth();
+  const { user } = useAuth();
   const { subscription, loading, error } = useSubscriptionStatus();
-  if (!user) return <div>Please log in to view settings.</div>;
 
+  const currentUser = getCurrentUser();
+  if (!user && !currentUser)  return <div>Please log in to view settings.</div>;
 
   if (loading) return <div>Loading subscription info...</div>;
   if (error) return <div>Error loading subscription: {error}</div>;
@@ -60,23 +61,14 @@ export function SettingsPage() {
         Unsubscribe
       </button>
       <div>
-      <h2>Settings</h2>
-      <p>User: {user.username}</p>
-
-      <h3>Subscription Status</h3>
-      <p>Active: {subscription?.active ? 'Yes' : 'No'}</p>
-      <p>Status: {subscription?.status}</p>
-      {subscription?.current_period_end && (
-        <p>
-          Current period ends: {new Date(subscription.current_period_end).toLocaleDateString()}
-        </p>
-      )}
-      {subscription?.cancel_at_period_end && <p>Subscription will cancel at period end.</p>}
-      {subscription?.cancellation_date && (
-        <p>
-          Cancellation requested: {new Date(subscription.cancellation_date).toLocaleDateString()}
-        </p>
-      )}
+      <div className="subscription-info">
+        <p>Active: {subscription?.active ? 'Yes' : 'No'}</p>
+        <p>Status: {subscription?.status}</p>
+        {subscription?.current_period_end && (
+          <p>Ends: {new Date(subscription.current_period_end).toLocaleDateString()}</p>
+        )}
+        {subscription?.cancel_at_period_end && <p>Will cancel at period end</p>}
+      </div>
     </div>
       {message && <p className="message">{message}</p>}
 
