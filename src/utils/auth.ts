@@ -61,11 +61,7 @@ interface SubscriptionStatus {
 // Check subscription from backend
 export const checkSubscription = async (userId: string): Promise<boolean> => {
   try {
-    const res = await fetch(`${API_URL}/api/subscription/check`, {
-      method: 'GET', // use POST so we can send metadata properly
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ user_id: userId }),
-    })
+    const res = await fetch(`${API_URL}/api/subscription/check?id=${userId}`)
 
     if (!res.ok) {
       console.error('Subscription check failed:', await res.text())
