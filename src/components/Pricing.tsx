@@ -169,7 +169,7 @@ export default function Pricing() {
         {!user && (
           <div className="pricing-footer">
             <button 
-              onClick={handleLogin} 
+            onClick={handleLogin} 
               className="pricing-cta"
               style={{ width: 'auto', display: 'inline-block' }}
             >
