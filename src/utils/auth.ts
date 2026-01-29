@@ -1,14 +1,20 @@
-const API_URL = import.meta.env.VITE_API_URL || 'https://wowstats-backend.vercel.app'
-
+const API_URL =
+  import.meta.env.VITE_API_URL || 'https://wowstats-backend.vercel.app'
+  console.log('AUTH FILE PATH:', import.meta.url)
 export interface DiscordUser {
   id: string
   username: string
   email: string
   avatar?: string
+  // Cached UI state only – real truth comes from Stripe
   subscribed: boolean
 }
 
-// Check if user is logged in (has user data in localStorage)
+/* =========================
+   Local user helpers
+========================= */
+
+// Get cached user
 export const getCurrentUser = (): DiscordUser | null => {
   const userStr = localStorage.getItem('discord_user')
   if (!userStr) return null
@@ -19,54 +25,67 @@ export const getCurrentUser = (): DiscordUser | null => {
   }
 }
 
-// Save user data after Discord OAuth
+// Save cached user
 export const saveUser = (user: DiscordUser) => {
   localStorage.setItem('discord_user', JSON.stringify(user))
 }
 
-// Clear user data (logout)
+// Clear cached user
 export const clearUser = () => {
   localStorage.removeItem('discord_user')
 }
 
-// Initiate Discord OAuth
+/* =========================
+   Auth
+========================= */
+
+// Start Discord OAuth
 export const loginWithDiscord = () => {
   window.location.href = `${API_URL}/api/auth/discord`
 }
 
-// Check subscription status using the subscription check endpoint
-export const checkSubscription = async (userId: string): Promise<boolean> => {
+/* =========================
+   Subscription
+========================= */
+
+// Always check backend (Stripe-backed)
+export const checkSubscription = async (
+  userId: string
+): Promise<boolean> => {
   try {
-    const response = await fetch(`${API_URL}/api/subscription/check?id=${userId}`)
-    if (!response.ok) {
-      // Fallback to user endpoint if subscription check fails
-      const userResponse = await fetch(`${API_URL}/api/user?id=${userId}`)
-      if (!userResponse.ok) return false
-      const user = await userResponse.json()
-      return user.subscribed || false
-    }
-    
-    const status = await response.json()
-    return status.subscribed || status.has_active || false
-  } catch (error) {
-    console.error('Failed to check subscription:', error)
-    // Fallback: check cached user data
-    const user = getCurrentUser()
-    return user?.subscribed || false
+    const res = await fetch(
+      `${API_URL}/api/subscription/check?id=${userId}`
+    )
+    console.log('ello')
+    if (!res.ok) return false
+
+    const data = await res.json()
+    console.log('data', data)
+
+    return Boolean(data.stripe_status === 'active')
+  } catch (err) {
+    console.error('Subscription check failed:', err)
+    return false
   }
 }
 
-// Refresh subscription status for current user
+// Re-sync local cache with backend truth
 export const refreshSubscription = async (): Promise<boolean> => {
   const user = getCurrentUser()
   if (!user) return false
-  
+
   const isSubscribed = await checkSubscription(user.id)
-  if (isSubscribed !== user.subscribed) {
-    const updatedUser = { ...user, subscribed: isSubscribed }
-    saveUser(updatedUser)
-    // Dispatch event to update all components
+
+  // Update cache only if changed
+  if (user.subscribed !== isSubscribed) {
+    saveUser({
+      ...user,
+      subscribed: isSubscribed,
+    })
+
+    // Notify app (navbar, paywall, etc)
     window.dispatchEvent(new Event('userAuthChange'))
   }
+
   return isSubscribed
 }

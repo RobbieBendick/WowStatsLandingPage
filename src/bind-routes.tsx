@@ -1,5 +1,6 @@
-import { Route, Routes, HashRouter } from 'react-router-dom';
+import { Route, Routes, HashRouter as Router } from 'react-router-dom';
 import App from './App';
+import SuccessPage from './components/SuccessPage';
 // import { LandingPage } from './pages/landing-page';
 
 export const ROUTE_PATHS: any = {
@@ -24,7 +25,7 @@ export const routes: IRoute[] = [
   },
   {
     path: ROUTE_PATHS.success,
-    element: <div>Success</div>,
+    element: <SuccessPage />,
   }, 
   {
     path: ROUTE_PATHS.cancel,
@@ -37,12 +38,15 @@ export const routes: IRoute[] = [
 
 export function BindRoutes(props: { children?: React.ReactNode }): JSX.Element {
   return (
-    <HashRouter>
+    <Router>
         <Routes>
-        {routes.map((route) => (
+        {routes.map((route) => {
+          console.log('route', route);
+          return (
             <Route key={route.path} path={route.path} element={route.element} />
-        ))}
+          );
+        })}
         </Routes>
-    </HashRouter>
+    </Router>
   );
 }
