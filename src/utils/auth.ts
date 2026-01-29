@@ -62,7 +62,7 @@ interface SubscriptionStatus {
 export const checkSubscription = async (userId: string): Promise<boolean> => {
   try {
     const res = await fetch(`${API_URL}/api/subscription/check`, {
-      method: 'POST', // use POST so we can send metadata properly
+      method: 'GET', // use POST so we can send metadata properly
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ user_id: userId }),
     })
@@ -76,7 +76,7 @@ export const checkSubscription = async (userId: string): Promise<boolean> => {
     console.log('Subscription data:', data)
 
     // active is already computed by backend
-    return Boolean(data.active)
+    return Boolean(data.status === 'active' || data.status === 'trialing' || data.status === 'comped')
   } catch (err) {
     console.error('Subscription check failed:', err)
     return false
