@@ -154,7 +154,7 @@ export default function Pricing() {
               </ul>
               <button
                 onClick={() => handleSubscribe(option)}
-                disabled={loading}
+                disabled={loading || isSubscribed}
                 className={`pricing-cta ${option.isPopular ? 'popular' : ''}`}
                 style={{ 
                   opacity: loading ? 0.6 : 1, 
