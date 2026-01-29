@@ -38,7 +38,9 @@ export function useSubscription(): UseSubscriptionReturn {
 
       try {
         // Fetch subscription status from backend
-        const res = await fetch(`${API_URL}/api/subscription/check?id=${currentUser.id}`)
+        const res = await fetch(`${API_URL}/api/subscription/check?id=${currentUser.id}`, {
+          method: 'GET'
+        })
         if (!res.ok) throw new Error(`Failed to check subscription: ${res.statusText}`)
 
         const status: SubscriptionStatus = await res.json()
