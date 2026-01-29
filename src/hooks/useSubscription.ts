@@ -55,11 +55,11 @@ export function useSubscription(): UseSubscriptionReturn {
           (status.status === 'comped' && compedUntil && compedUntil > now) ||
           (status.status === 'trialing' && periodEnd && periodEnd > now)
 
-        setIsSubscribed(active || false)
+        setIsSubscribed(active ? true : false)
 
         // Optionally update the user object if subscription changed
         if (active !== currentUser.subscribed) {
-          setUser({ ...currentUser, subscribed: active || false })
+          setUser({ ...currentUser, subscribed: active ? true : false })
         }
       } catch (err) {
         console.error('Failed to fetch subscription:', err)

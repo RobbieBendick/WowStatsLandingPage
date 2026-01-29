@@ -43,8 +43,10 @@ const pricingOptions: PricingOption[] = [
 ]
 
 export default function Pricing() {
-  const { user, isLoading: checkingAuth } = useSubscription()
+  const { user, isLoading: checkingAuth, isSubscribed } = useSubscription()
   const [loading, setLoading] = useState(false)
+
+  
 
   const handleSubscribe = async (option: PricingOption) => {
     try {
@@ -159,7 +161,7 @@ export default function Pricing() {
                   cursor: loading ? 'not-allowed' : 'pointer'
                 }}
               >
-                {loading ? 'Processing...' : option.id === 'free' ? 'Download Free' : user ? 'Subscribe' : 'Login to Subscribe'}
+                {loading ? 'Processing...' : option.id === 'free' ? 'Download Free' : isSubscribed ? 'Already Subscribed' : 'Subscribe'}
               </button>
             </div>
           ))}
