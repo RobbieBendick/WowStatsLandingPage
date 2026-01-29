@@ -2,6 +2,7 @@ import { Route, Routes, HashRouter as Router } from 'react-router-dom';
 import App from './App';
 import SuccessPage from './components/SuccessPage';
 import { SettingsPage } from './components/SettingsPage';
+import { ProtectedRoute } from './components/ProtectedRoute';
 // import { LandingPage } from './pages/landing-page';
 
 export const ROUTE_PATHS: any = {
@@ -35,7 +36,7 @@ export const routes: IRoute[] = [
   },
   {
     path: ROUTE_PATHS.settings,
-    element: <SettingsPage />,
+    element: <ProtectedRoute><SettingsPage /></ProtectedRoute>,
   }
 ];
 
