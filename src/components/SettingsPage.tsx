@@ -11,6 +11,8 @@ export function SettingsPage() {
   const [message, setMessage] = useState<string | null>(null);
   const { user } = useAuth();
   const { subscription, loading, error } = useSubscriptionStatus();
+  const isActive = subscription?.active === true;
+  const isCancelling = subscription?.cancel_at_period_end === true;
 
   const currentUser = getCurrentUser();
   if (!user && !currentUser)  return <div>Please log in to view settings.</div>;
@@ -51,32 +53,66 @@ export function SettingsPage() {
 
   return (
     <div className="unsubscribe-section">
-      <h2>Unsubscribe from WoWStats Pro</h2>
-      <p>If you unsubscribe, you will lose access to premium features.</p>
-      <button
-        className="unsubscribe-button"
-        onClick={() => setDialogOpen(true)}
-        disabled={isLoading}
-      >
-        Unsubscribe
-      </button>
-      <div>
+      <h2>WoWStats Pro Subscription</h2>
+  
       <div className="subscription-info">
-        <p>Active: {subscription?.active ? 'Yes' : 'No'}</p>
-        <p>Status: {subscription?.status}</p>
+        <p>
+          Status:{' '}
+          <strong>
+            {isActive
+              ? isCancelling
+                ? 'Cancelling'
+                : 'Active'
+              : 'Inactive'}
+          </strong>
+        </p>
+  
         {subscription?.current_period_end && (
-          <p>Ends: {new Date(subscription.current_period_end).toLocaleDateString()}</p>
+          <p>
+            Access until:{' '}
+            {new Date(subscription.current_period_end).toLocaleDateString()}
+          </p>
         )}
-        {subscription?.cancel_at_period_end && <p>Will cancel at period end</p>}
+  
+        {/* ACTIVE & NOT CANCELLING */}
+        {isActive && !isCancelling && (
+          <>
+            <p>If you unsubscribe, you will lose access to premium features.</p>
+  
+            <button
+              className="unsubscribe-button"
+              onClick={() => setDialogOpen(true)}
+              disabled={isLoading}
+            >
+              Unsubscribe
+            </button>
+          </>
+        )}
+  
+        {/* ACTIVE BUT ALREADY CANCELLING */}
+        {isActive && isCancelling && (
+          <p className="status-note">
+            Your subscription is already set to cancel at the end of the billing
+            period.
+          </p>
+        )}
+  
+        {/* NOT ACTIVE */}
+        {!isActive && (
+          <p className="status-note">
+            You are not currently subscribed.
+          </p>
+        )}
       </div>
-    </div>
+  
       {message && <p className="message">{message}</p>}
-
+  
       {isDialogOpen && (
         <div className="dialog-backdrop">
           <div className="dialog">
             <h3>Confirm Unsubscribe</h3>
             <p>Are you sure you want to unsubscribe?</p>
+  
             <div className="dialog-buttons">
               <button
                 className="dialog-button confirm"
@@ -85,6 +121,7 @@ export function SettingsPage() {
               >
                 Yes, unsubscribe
               </button>
+  
               <button
                 className="dialog-button cancel"
                 onClick={() => setDialogOpen(false)}
@@ -96,8 +133,6 @@ export function SettingsPage() {
           </div>
         </div>
       )}
-
-
     </div>
-  );
+  )
 }
