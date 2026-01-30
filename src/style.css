@@ -462,6 +462,16 @@ body::before {
   flex-wrap: wrap;
 }
 
+.hero-button {
+  background: var(--accent-gradient);
+  color: white;
+  border: none;
+  padding: 1.1rem 2.5rem;
+  border-radius: 14px;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
 .btn-primary {
   background: var(--accent-gradient);
   color: white;

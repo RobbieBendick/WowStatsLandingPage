@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export default function SuccessPage() {
   return (
     <div className="hero" style={{ minHeight: '100vh', paddingTop: '6rem' }}>
@@ -15,6 +17,10 @@ export default function SuccessPage() {
           Congratulations! Your WoWStats Pro subscription is now active. 
           You now have access to advanced analytics, arena stats, and premium features.
         </p>
+
+        <Link to="/dashboard" className="hero-button">
+          Go back to homepage
+        </Link>
       </div>
     </div>
   );

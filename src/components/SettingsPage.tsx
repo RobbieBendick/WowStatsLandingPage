@@ -69,7 +69,7 @@ export function SettingsPage() {
   
         {subscription?.current_period_end && (
           <p>
-            Access until:{' '}
+            Pro access ends on:{' '}
             {new Date(subscription.current_period_end).toLocaleDateString()}
           </p>
         )}
@@ -77,7 +77,7 @@ export function SettingsPage() {
         {/* ACTIVE & NOT CANCELLING */}
         {isActive && !isCancelling && (
           <>
-            <p>If you unsubscribe, you will lose access to premium features.</p>
+            <p>If you unsubscribe, you will lose access to Pro features at the end of your current billing period.</p>
   
             <button
               className="unsubscribe-button"
