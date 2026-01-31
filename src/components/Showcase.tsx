@@ -145,8 +145,8 @@ export default function Showcase() {
           <div className='showcase-section'>
             <h3 className='showcase-section-title'>Match Analysis Pages</h3>
             <p className='showcase-section-subtitle'>
-              Detailed breakdowns including match overview, CC timelines, spell
-              analysis, death logs, and more
+              Detailed breakdowns including match overview, Crowd Control
+              timelines, spell analysis, death logs, and more
             </p>
             <div className='showcase-grid'>
               {matchPages.map((image, index) => (
