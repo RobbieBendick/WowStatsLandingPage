@@ -112,10 +112,6 @@ export default function Pricing() {
     }
   };
 
-  const handleLogin = () => {
-    loginWithDiscord();
-  };
-
   if (checkingAuth) {
     return <div>Loading...</div>;
   }
