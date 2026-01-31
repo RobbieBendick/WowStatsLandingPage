@@ -1,49 +1,53 @@
 const benefits = [
   {
-    icon: '⚡',
-    title: 'Organized Match History',
-    description: 'Organize your match history by map, opponent, teammate, or specific classes. Filter and search through your entire match history with powerful tools.',
+    icon: '🎯',
+    title: 'Quick Insights',
+    description:
+      'Get a clear snapshot of your performance immediately after every match, so you can make improvements fast.',
   },
   {
-    icon: '🎨',
-    title: 'Intuitive Design',
-    description: 'Intuitive interface that makes tracking your progress fun and effortless',
+    icon: '💡',
+    title: 'Intuitive Interface',
+    description:
+      'Navigate your stats effortlessly with a clean and user-friendly interface designed for WoW Arena players.',
   },
   {
-    icon: '🔍',
-    title: 'Advanced Filters',
-    description: 'Powerful search and filtering to find exactly what you need. Search games vs specific classes, opponents, maps, and more',
+    icon: '📈',
+    title: 'Progress Tracking',
+    description:
+      'Monitor your skill improvement over time with visual charts and graphs that highlight trends in your gameplay.',
   },
   {
-    icon: '💾',
-    title: 'Cloud Backup & Restore',
-    description: 'Save your data to the cloud and restore it anytime. Your stats are always safe and accessible',
+    icon: '🌐',
+    title: 'Team & Opponent Overview',
+    description:
+      'Quickly spot performance trends for your team and opponents across matches at a glance.',
   },
-]
+];
 
 export default function About() {
   return (
-    <section id="about" className="about">
-      <div className="container">
-        <div className="about-content">
-          <div className="about-header">
-            <h2 className="section-title">Why Choose WowStats?</h2>
-            <p className="about-intro">
-              The ultimate analytics platform for WoW Arena players. 
-              Elevate your gameplay with insights that matter.
+    <section id='about' className='about'>
+      <div className='container'>
+        <div className='about-content'>
+          <div className='about-header'>
+            <h2 className='section-title'>Why Choose WowStats?</h2>
+            <p className='about-intro'>
+              The ultimate companion for WoW Arena players. Stay informed, track
+              progress, and gain insights that help you improve every match.
             </p>
           </div>
-          <div className="benefits-grid">
+          <div className='benefits-grid'>
             {benefits.map((benefit, index) => (
-              <div key={index} className="benefit-card">
-                <div className="benefit-icon">{benefit.icon}</div>
-                <h3 className="benefit-title">{benefit.title}</h3>
-                <p className="benefit-description">{benefit.description}</p>
+              <div key={index} className='benefit-card'>
+                <div className='benefit-icon'>{benefit.icon}</div>
+                <h3 className='benefit-title'>{benefit.title}</h3>
+                <p className='benefit-description'>{benefit.description}</p>
               </div>
             ))}
           </div>
         </div>
       </div>
     </section>
-  )
+  );
 }
