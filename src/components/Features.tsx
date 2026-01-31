@@ -9,7 +9,7 @@ const advancedFeatures: Feature[] = [
     icon: '💀',
     title: 'Death Log',
     description:
-      'See every event leading to player deaths in detail, including damage taken, healing, and abilities used. Perfect for learning from mistakes and improving performance.',
+      'See every damage event leading to player deaths in detail, including damage taken, and abilities used. Perfect for learning from mistakes and improving performance.',
   },
   {
     icon: '🛡️',
@@ -27,7 +27,7 @@ const advancedFeatures: Feature[] = [
     icon: '📋',
     title: 'Detailed Match Breakdown',
     description:
-      'Dive into a complete match overview with stats for damage, healing, buffs, debuffs, and more. Everything is structured to give you a full picture of how the game unfolded.',
+      'Dive into a complete match overview with stats for damage, healing, killing blows and more. Everything is structured to give you a full picture of how the game unfolded.',
   },
 ];
 

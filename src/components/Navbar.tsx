@@ -96,7 +96,10 @@ export default function Navbar() {
             <span></span>
           </button>
           <div className={`nav-links ${isMenuOpen ? 'active' : ''}`}>
-            <a href='#features' onClick={e => handleScroll(e, '#features')}>
+            <a
+              href='#features'
+              onClick={e => handleScroll(e, '#advanced-features')}
+            >
               Features
             </a>
             <a href='#about' onClick={e => handleScroll(e, '#about')}>
@@ -105,7 +108,12 @@ export default function Navbar() {
             <a href='#pricing' onClick={e => handleScroll(e, '#pricing')}>
               Pricing
             </a>
-            <a href='#contact' onClick={e => handleScroll(e, '#contact')}>
+            <a
+              style={{ cursor: 'pointer' }}
+              onClick={() =>
+                window.open('https://discord.gg/gjvQKPWgEn', '_blank')
+              }
+            >
               Contact
             </a>
             {user ? (

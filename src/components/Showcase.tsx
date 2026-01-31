@@ -30,6 +30,10 @@ const matchAnalysis = [
     title: 'Crowd Control Timeline',
   },
   {
+    src: `${baseUrl}screenshots/match-pages/wowstats-cc-timeline-hover.png`,
+    title: 'Hover Tooltip Analysis',
+  },
+  {
     src: `${baseUrl}screenshots/match-pages/wowstats-cooldown-timeline.png`,
     title: 'Cooldown Timeline',
   },
@@ -40,10 +44,6 @@ const matchAnalysis = [
   {
     src: `${baseUrl}screenshots/match-pages/wowstats-death-log.png`,
     title: 'Death Log Analysis',
-  },
-  {
-    src: `${baseUrl}screenshots/match-pages/wowstats-cc-timeline-hover.png`,
-    title: 'Hover Tooltip Analysis',
   },
 ];
 
