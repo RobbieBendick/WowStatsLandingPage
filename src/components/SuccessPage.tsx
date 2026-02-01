@@ -30,7 +30,7 @@ export default function SuccessPage() {
         className='hero-title gradient-text'
         style={{ fontSize: '2.5rem', fontWeight: 700 }}
       >
-        🎉 Subscription Activated!
+        <span style={{ color: '#FFD700' }}>🎉</span> Subscription Activated!
       </h1>
 
       <p
