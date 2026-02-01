@@ -1,46 +1,53 @@
 // Stripe utility functions
 // Install: npm install @stripe/stripe-js
 
-import { loadStripe } from '@stripe/stripe-js'
+import { loadStripe } from '@stripe/stripe-js';
 
-const API_URL = import.meta.env.VITE_API_URL || 'https://wowstats-backend.vercel.app'
+const API_URL =
+  import.meta.env.VITE_API_URL || 'https://wowstats-backend.vercel.app';
 
-type StripeInstance = Awaited<ReturnType<typeof loadStripe>>
-let stripePromise: Promise<StripeInstance> | null = null
+type StripeInstance = Awaited<ReturnType<typeof loadStripe>>;
+let stripePromise: Promise<StripeInstance> | null = null;
 
 export const getStripe = () => {
   if (!stripePromise) {
-    const publishableKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY
+    const publishableKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
     if (!publishableKey) {
-      console.warn('Stripe publishable key not found. Set VITE_STRIPE_PUBLISHABLE_KEY in .env')
-      return null
+      console.warn(
+        'Stripe publishable key not found. Set VITE_STRIPE_PUBLISHABLE_KEY in .env',
+      );
+      return null;
     }
-    stripePromise = loadStripe(publishableKey)
+    stripePromise = loadStripe(publishableKey);
   }
-  return stripePromise
-}
+  return stripePromise;
+};
 
 // Create checkout session via backend
-export const createCheckoutSession = async (userId: string, priceId: string) => {
+export const createCheckoutSession = async (
+  userId: string,
+  priceId: string,
+) => {
   const response = await fetch(`${API_URL}/api/stripe/create-checkout`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       user_id: userId,
-      price_id: priceId
-    })
-  })
+      price_id: priceId,
+      client: 'web',
+    }),
+  });
 
   if (!response.ok) {
-    const error = await response.text()
-    throw new Error(`Failed to create checkout: ${error}`)
+    const error = await response.text();
+    throw new Error(`Failed to create checkout: ${error}`);
   }
 
-  const data = await response.json()
-  return data.url // Returns the Stripe Checkout URL
-}
+  const data = await response.json();
+  return data.url; // Returns the Stripe Checkout URL
+};
 
 // Redirect to checkout URL
 export const redirectToCheckout = async (checkoutUrl: string) => {
-  window.location.href = checkoutUrl
-}
+  window.location.href = checkoutUrl;
+};
