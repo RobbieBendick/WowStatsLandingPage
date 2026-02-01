@@ -3,7 +3,6 @@ import { isTauri } from '@tauri-apps/api/core';
 export default function SuccessPage() {
   return (
     <div
-      className='hero'
       style={{
         position: 'relative',
         overflow: 'hidden',
