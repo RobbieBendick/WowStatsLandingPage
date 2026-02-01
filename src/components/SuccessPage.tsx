@@ -6,13 +6,12 @@ export default function SuccessPage() {
       className='hero'
       style={{
         minHeight: '100vh',
-        paddingTop: '6rem',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
         textAlign: 'center',
-        gap: '2rem',
+        gap: '1rem',
       }}
     >
       {/* Animated checkmark */}

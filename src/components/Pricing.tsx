@@ -31,7 +31,7 @@ const pricingOptions: PricingOption[] = [
     features: [
       'Basic Statistics',
       'Death Logs',
-      'CC Timelines',
+      'Crowd Control Timelines',
       'Cooldown Timelines',
       'Resists & Misses',
     ],
@@ -46,7 +46,7 @@ const pricingOptions: PricingOption[] = [
     features: [
       'Basic Statistics',
       'Death Logs',
-      'CC Timelines',
+      'Crowd Control Timelines',
       'Cooldown Timelines',
       'Resists & Misses',
     ],
