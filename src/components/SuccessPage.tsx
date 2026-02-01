@@ -11,15 +11,6 @@ export default function SuccessPage() {
     }
   }, []);
 
-  const handleClose = async () => {
-    try {
-      const currentWindow = getCurrentWindow();
-      await currentWindow.close();
-    } catch {
-      // ignore if not in Tauri
-    }
-  };
-
   return (
     <div
       className='hero'
@@ -71,30 +62,14 @@ export default function SuccessPage() {
           fontWeight: 'bold',
         }}
       >
-        {canClose
-          ? 'You can close this window and return to the app.'
-          : 'If you are using the app, please restart it to see your Pro features.'}
+        {isTauri() && (
+          <p>
+            Using the desktop app? You can either <strong>restart</strong> it,
+            or <strong>right-click and select Back TWICE</strong> to see your
+            Pro features.
+          </p>
+        )}
       </p>
-
-      {canClose && (
-        <button
-          onClick={handleClose}
-          style={{
-            padding: '0.75rem 2rem',
-            fontSize: '1rem',
-            fontWeight: 600,
-            borderRadius: '12px',
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            color: '#fff',
-            border: 'none',
-            cursor: 'pointer',
-            boxShadow: '0 4px 16px rgba(102,126,234,0.3)',
-            transition: 'all 0.2s ease',
-          }}
-        >
-          Close Window
-        </button>
-      )}
     </div>
   );
 }
