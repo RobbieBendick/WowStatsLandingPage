@@ -26,11 +26,20 @@ export default function SuccessPage() {
         ✅
       </div>
 
-      <div>
-        <span>🎉</span>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: '18px',
+        }}
+      >
+        <span style={{ display: 'inline-block', transform: 'scale(2)' }}>
+          🎉
+        </span>
         <h1
           className='hero-title gradient-text'
-          style={{ fontSize: '2.5rem', fontWeight: 700 }}
+          style={{ fontSize: '2.5rem', fontWeight: 700, margin: 0 }}
         >
           Subscription Activated!
         </h1>
