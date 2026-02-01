@@ -56,21 +56,25 @@ export default function SuccessPage() {
         enjoy advanced analytics, arena stats, and premium features.
       </p>
 
-      <p
-        style={{
-          maxWidth: '500px',
-          color: '#ffd700',
-          fontWeight: 'bold',
-        }}
-      >
-        {isTauri() && (
-          <p>
-            Using the desktop app? You can either <strong>restart</strong> it,
-            or <strong>right-click and select Back TWICE</strong> to see your
-            Pro features.
-          </p>
-        )}
-      </p>
+      {isTauri() && (
+        <div
+          style={{
+            maxWidth: '500px',
+            backgroundColor: 'rgba(255, 223, 0, 0.15)', // subtle yellow
+            color: '#ffd700', // text color
+            fontWeight: 'bold',
+            padding: '1rem 1.25rem',
+            borderRadius: '12px',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+            marginTop: '1rem',
+            lineHeight: 1.5,
+          }}
+        >
+          Using the desktop app? You can either <strong>restart</strong> it, or{' '}
+          <strong>right-click and select Back TWICE</strong> to see your Pro
+          features.
+        </div>
+      )}
     </div>
   );
 }
