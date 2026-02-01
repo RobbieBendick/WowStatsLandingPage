@@ -1,16 +1,6 @@
-import { useEffect, useState } from 'react';
-import { getCurrentWindow } from '@tauri-apps/api/window';
 import { isTauri } from '@tauri-apps/api/core';
 
 export default function SuccessPage() {
-  const [canClose, setCanClose] = useState(false);
-
-  useEffect(() => {
-    if (isTauri()) {
-      setCanClose(true); // Only show "Close" button if inside Tauri
-    }
-  }, []);
-
   return (
     <div
       className='hero'
