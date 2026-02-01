@@ -5,6 +5,9 @@ export default function SuccessPage() {
     <div
       className='hero'
       style={{
+        position: 'relative',
+        overflow: 'hidden',
+        background: 'transparent',
         minHeight: '100vh',
         display: 'flex',
         flexDirection: 'column',
