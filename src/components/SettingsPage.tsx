@@ -1,138 +1,155 @@
 import { useState } from 'react';
-import { getCurrentUser } from '../utils/auth';
-import { useAuth } from '../providers/AuthProvider';
-import { useSubscriptionStatus } from '../hooks/useSubscriptionStatus';
+import { useSubscription } from '../hooks/useSubscription';
 
 const API_URL = import.meta.env.VITE_API_URL || 'https://wowstats-backend.vercel.app';
 
 export function SettingsPage() {
-  const [isDialogOpen, setDialogOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
-  const { user } = useAuth();
-  const { subscription, loading, error } = useSubscriptionStatus();
-  const isActive = subscription?.active === true;
-  const isCancelling = subscription?.cancel_at_period_end === true;
+  const { user, subscriptionStatus, isLoading, refresh } = useSubscription();
+  const [isUnsubscribing, setIsUnsubscribing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
-  const currentUser = getCurrentUser();
-  if (!user && !currentUser)  return <div>Please log in to view settings.</div>;
+  if (!user) {
+    return <div>Please log in to view settings.</div>;
+  }
 
-  if (loading) return <div>Loading subscription info...</div>;
-  if (error) return <div>Error loading subscription: {error}</div>;
+  if (isLoading) {
+    return <div>Loading subscription info...</div>;
+  }
 
-  const handleUnsubscribe = async () => {
-    if (!user?.id) {
-      console.error('No user ID found');
+  const handleUnsubscribe = () => {
+    setConfirmOpen(true);
+  };
+
+  const confirmHandler = async (confirmed: boolean) => {
+    setConfirmOpen(false);
+
+    if (!confirmed) return;
+
+    const userId = subscriptionStatus?.user_id ?? user.id;
+    if (!userId) {
+      setError('No user ID found.');
       return;
     }
 
-    try {
-      setIsLoading(true);
-      setMessage(null);
+    setIsUnsubscribing(true);
+    setError(null);
 
-      const response = await fetch(`${API_URL}/api/subscription/unsubscribe`, {
+    try {
+      const res = await fetch(`${API_URL}/api/subscription/unsubscribe`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ user_id: user.id }),
+        body: JSON.stringify({ user_id: userId }),
       });
 
-      if (!response.ok) throw new Error(`Server error: ${response.status}`);
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data?.error || 'Failed to unsubscribe.');
+      }
 
-      const data = await response.json();
-      console.log('Unsubscribe response:', data);
-
-      setMessage('You have successfully unsubscribed.');
-      setDialogOpen(false);
-    } catch (err) {
+      await refresh();
+    } catch (err: unknown) {
       console.error(err);
-      setMessage('Failed to unsubscribe. Please try again.');
+      setError(err instanceof Error ? err.message : 'Unknown error occurred.');
     } finally {
-      setIsLoading(false);
+      setIsUnsubscribing(false);
     }
   };
+
+  const isComped = subscriptionStatus?.comped_until != null && new Date(subscriptionStatus.comped_until) > new Date();
+  const isCancelAtPeriodEnd = subscriptionStatus?.cancel_at_period_end === true;
 
   return (
     <div className="unsubscribe-section">
       <h2>WoWStats Pro Subscription</h2>
-  
+
       <div className="subscription-info">
         <p>
           Status:{' '}
           <strong>
-            {isActive
-              ? isCancelling
+            {subscriptionStatus?.status === 'active' || subscriptionStatus?.status === 'comped' || subscriptionStatus?.status === 'trialing'
+              ? isCancelAtPeriodEnd
                 ? 'Cancelling'
                 : 'Active'
               : 'Inactive'}
           </strong>
         </p>
-  
-        {subscription?.current_period_end && (
+
+        {subscriptionStatus?.current_period_end && (
           <p>
             Pro access ends on:{' '}
-            {new Date(subscription.current_period_end).toLocaleDateString()}
+            {new Date(subscriptionStatus.current_period_end).toLocaleDateString()}
           </p>
         )}
-  
-        {/* ACTIVE & NOT CANCELLING */}
-        {isActive && !isCancelling && (
-          <>
-            <p>If you unsubscribe, you will lose access to Pro features at the end of your current billing period.</p>
-  
-            <button
-              className="unsubscribe-button"
-              onClick={() => setDialogOpen(true)}
-              disabled={isLoading}
-            >
-              Unsubscribe
-            </button>
-          </>
-        )}
-  
-        {/* ACTIVE BUT ALREADY CANCELLING */}
-        {isActive && isCancelling && (
+
+        <button
+          type="button"
+          className="unsubscribe-button"
+          onClick={handleUnsubscribe}
+          disabled={
+            isUnsubscribing ||
+            isCancelAtPeriodEnd ||
+            isComped
+          }
+        >
+          {isUnsubscribing
+            ? 'Unsubscribing...'
+            : isCancelAtPeriodEnd
+              ? 'Subscription Cancelled'
+              : 'Unsubscribe'}
+        </button>
+
+        {isComped ? (
           <p className="status-note">
-            Your subscription is already set to cancel at the end of the billing
-            period.
+            You are currently on a <strong>complimentary Pro subscription</strong>.
+            This access is granted by an administrator and cannot be cancelled from
+            your account.
           </p>
+        ) : (
+          isCancelAtPeriodEnd && (
+            <p className="status-note">
+              Your subscription has been cancelled and will remain active until{' '}
+              <strong>
+                {subscriptionStatus?.current_period_end
+                  ? new Date(subscriptionStatus.current_period_end).toLocaleDateString()
+                  : 'the end of your billing period'}
+              </strong>
+              . You will keep Pro access until that date.
+            </p>
+          )
         )}
-  
-        {/* NOT ACTIVE */}
-        {!isActive && (
-          <p className="status-note">
-            You are not currently subscribed.
-          </p>
-        )}
+
+        {error && <p className="message" style={{ color: 'var(--error, #f44336)' }}>{error}</p>}
       </div>
-  
-      {message && <p className="message">{message}</p>}
-  
-      {isDialogOpen && (
-        <div className="dialog-backdrop">
-          <div className="dialog">
-            <h3>Confirm Unsubscribe</h3>
-            <p>Are you sure you want to unsubscribe?</p>
-  
+
+      {confirmOpen && (
+        <div className="dialog-backdrop" onClick={() => confirmHandler(false)}>
+          <div className="dialog" onClick={(e) => e.stopPropagation()}>
+            <h3>Confirm Cancellation</h3>
+            <p>
+              Are you sure you want to unsubscribe? This will stop recurring billing, but you will keep Pro access until your subscription period ends.
+            </p>
+
             <div className="dialog-buttons">
               <button
-                className="dialog-button confirm"
-                onClick={handleUnsubscribe}
-                disabled={isLoading}
-              >
-                Yes, unsubscribe
-              </button>
-  
-              <button
+                type="button"
                 className="dialog-button cancel"
-                onClick={() => setDialogOpen(false)}
-                disabled={isLoading}
+                onClick={() => confirmHandler(false)}
               >
                 Cancel
+              </button>
+              <button
+                type="button"
+                className="dialog-button confirm"
+                onClick={() => confirmHandler(true)}
+                disabled={isUnsubscribing}
+              >
+                Unsubscribe
               </button>
             </div>
           </div>
         </div>
       )}
     </div>
-  )
+  );
 }
