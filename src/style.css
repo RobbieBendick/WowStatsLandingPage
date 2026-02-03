@@ -144,12 +144,19 @@ body::before {
   color: #fff;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: none;
 }
 
-.unsubscribe-button:hover {
+.unsubscribe-button:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+}
+
+.unsubscribe-button:disabled {
+  border: 2px solid rgba(244, 67, 54, 0.5);
+  color: rgba(244, 67, 54, 0.5);
+  background: transparent;
+  cursor: not-allowed;
 }
 
 .message {

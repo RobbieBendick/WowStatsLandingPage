@@ -58,6 +58,10 @@ export function SettingsPage() {
 
   const isComped = subscriptionStatus?.comped_until != null && new Date(subscriptionStatus.comped_until) > new Date();
   const isCancelAtPeriodEnd = subscriptionStatus?.cancel_at_period_end === true;
+  const isInactive =
+    !subscriptionStatus ||
+    (subscriptionStatus.status !== 'active' && subscriptionStatus.status !== 'trialing');
+  const isDisabled = isUnsubscribing || isCancelAtPeriodEnd || isComped || isInactive;
 
   return (
     <div className="unsubscribe-section">
@@ -86,17 +90,15 @@ export function SettingsPage() {
           type="button"
           className="unsubscribe-button"
           onClick={handleUnsubscribe}
-          disabled={
-            isUnsubscribing ||
-            isCancelAtPeriodEnd ||
-            isComped
-          }
+          disabled={isDisabled}
         >
           {isUnsubscribing
             ? 'Unsubscribing...'
             : isCancelAtPeriodEnd
               ? 'Subscription Cancelled'
-              : 'Unsubscribe'}
+              : isInactive
+                ? 'Not subscribed'
+                : 'Unsubscribe'}
         </button>
 
         {isComped ? (
