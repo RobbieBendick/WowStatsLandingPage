@@ -12,7 +12,8 @@ interface FooterSection {
 const footerSections: FooterSection[] = [
   {
     title: 'WowStats',
-    description: 'Your ultimate World of Warcraft Arena statistics tracker',
+    description:
+      'By WoW PvPers, for WoW PvPers. Your ultimate Arena statistics tracker.',
   },
   {
     title: 'Product',
@@ -35,7 +36,7 @@ const footerSections: FooterSection[] = [
 export default function Footer() {
   const handleScroll = (
     e: React.MouseEvent<HTMLAnchorElement>,
-    href: string,
+    href: string
   ) => {
     e.preventDefault();
     const target = document.querySelector(href);
@@ -50,7 +51,13 @@ export default function Footer() {
         <div className='footer-content'>
           {footerSections.map((section, index) => (
             <div key={index} className='footer-section'>
-              <h4>{section.title}</h4>
+              <h4>
+                {section.title === 'WowStats' ? (
+                  <span className='gradient-text'>{section.title}</span>
+                ) : (
+                  section.title
+                )}
+              </h4>
               {section.description && <p>{section.description}</p>}
               {section.links && (
                 <>
@@ -63,7 +70,7 @@ export default function Footer() {
                           onClick={() =>
                             window.open(
                               'https://discord.gg/gjvQKPWgEn',
-                              '_blank',
+                              '_blank'
                             )
                           }
                         >
@@ -87,7 +94,10 @@ export default function Footer() {
           ))}
         </div>
         <div className='footer-bottom'>
-          <p>&copy; 2024 WowStats. All rights reserved.</p>
+          <p>
+            &copy; 2024 <span className='gradient-text'>WowStats</span>. All
+            rights reserved.
+          </p>
         </div>
       </div>
     </footer>

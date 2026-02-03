@@ -31,7 +31,9 @@ export default function About() {
       <div className='container'>
         <div className='about-content'>
           <div className='about-header'>
-            <h2 className='section-title'>Why Choose WowStats?</h2>
+            <h2 className='section-title'>
+              Why Choose <span className='gradient-text'>WowStats</span>?
+            </h2>
             <p className='about-intro'>
               The ultimate companion for WoW Arena players. Stay informed, track
               progress, and gain insights that help you improve every match.

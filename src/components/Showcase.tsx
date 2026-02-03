@@ -109,7 +109,9 @@ export default function Showcase() {
     <>
       <section id='showcase' className='showcase'>
         <div className='container'>
-          <h2 className='section-title'>See WowStats in Action</h2>
+          <h2 className='section-title'>
+            See <span className='gradient-text'>WowStats</span> in Action
+          </h2>
           <p className='section-subtitle'>
             Get a glimpse of the powerful features and beautiful interface
           </p>
@@ -206,12 +208,12 @@ export default function Showcase() {
             ›
           </button>
           <div className='modal-content' onClick={e => e.stopPropagation()}>
+            <p className='modal-title'>{selectedImage.title}</p>
             <img
               src={selectedImage.src}
               alt={selectedImage.title}
               className='modal-image'
             />
-            <p className='modal-title'>{selectedImage.title}</p>
           </div>
         </div>
       )}

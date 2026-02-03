@@ -1,15 +1,6 @@
 :root {
-  font-family:
-    'Inter',
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    Oxygen,
-    Ubuntu,
-    Cantarell,
-    sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   line-height: 1.6;
   font-weight: 400;
 
@@ -55,8 +46,7 @@ body::before {
   left: 0;
   right: 0;
   bottom: 0;
-  background:
-    radial-gradient(
+  background: radial-gradient(
       circle at 20% 50%,
       rgba(102, 126, 234, 0.1) 0%,
       transparent 50%
@@ -495,9 +485,18 @@ body::before {
   font-size: clamp(1.1rem, 2vw, 1.35rem);
   color: var(--text-secondary);
   max-width: 750px;
-  margin: 0 auto 3rem;
+  margin: 0 auto 1rem;
   line-height: 1.7;
   animation: fadeInUp 0.8s ease-out 0.2s both;
+}
+
+.hero-byline {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  opacity: 0.85;
+  margin: 0 auto 3rem;
+  font-style: italic;
+  animation: fadeInUp 0.8s ease-out 0.3s both;
 }
 
 .hero-buttons {
@@ -634,13 +633,9 @@ body::before {
     rgba(102, 126, 234, 0.3),
     rgba(118, 75, 162, 0.3)
   );
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
-  mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask-composite: exclude;
   opacity: 0;
   transition: opacity 0.4s ease;
@@ -665,8 +660,7 @@ body::before {
   -webkit-text-fill-color: transparent;
   background-clip: text;
   margin-bottom: 0.5rem;
-  transition:
-    filter 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+  transition: filter 0.15s cubic-bezier(0.4, 0, 0.2, 1),
     opacity 0.15s cubic-bezier(0.4, 0, 0.2, 1),
     transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   will-change: filter, opacity, transform;
@@ -767,13 +761,9 @@ body::before {
   border-radius: 24px;
   padding: 2px;
   background: var(--accent-gradient);
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
-  mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask-composite: exclude;
   opacity: 0;
   transition: opacity 0.4s ease;
@@ -892,13 +882,24 @@ body::before {
   max-width: 90vw;
   max-height: 90vh;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  gap: 1rem;
+}
+
+.modal-title {
+  color: var(--text-primary);
+  font-size: 2rem;
+  font-weight: 600;
+  text-align: center;
+  margin: 0;
+  flex-shrink: 0;
 }
 
 .modal-image {
   max-width: 100%;
-  max-height: 90vh;
+  max-height: calc(90vh - 3rem);
   object-fit: contain;
   border-radius: 8px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
@@ -990,6 +991,10 @@ body::before {
   .modal-content {
     max-width: 95vw;
     max-height: 85vh;
+  }
+
+  .modal-image {
+    max-height: calc(85vh - 3rem);
   }
 }
 
@@ -1273,13 +1278,9 @@ body::before {
   border-radius: 24px;
   padding: 2px;
   background: var(--accent-gradient);
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
-  mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask-composite: exclude;
   opacity: 0.3;
   z-index: -1;
@@ -1480,6 +1481,24 @@ body::before {
   margin-bottom: 2.5rem;
 }
 
+.cta-content p.cta-note {
+  font-size: 1rem;
+  opacity: 0.9;
+  margin-bottom: 2rem;
+  max-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.cta-note-link {
+  color: var(--accent, #7c5cff);
+  text-decoration: none;
+  font-weight: 600;
+}
+.cta-note-link:hover {
+  text-decoration: underline;
+}
+
 /* Footer */
 .footer {
   background: rgba(27, 27, 54, 0.6);
@@ -1641,8 +1660,53 @@ body::before {
 }
 
 @media (max-width: 768px) {
+  /* Consistent 2rem horizontal padding and full-width content on mobile */
+  .hero,
+  .advanced-features,
+  .about,
+  .pricing,
+  .cta-section,
+  .showcase {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+
   .hero {
-    padding: 4rem 1.5rem;
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+  }
+
+  .container {
+    width: 100%;
+    padding-inline: 0;
+    max-width: none;
+  }
+
+  .features-grid {
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .feature-card {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    box-sizing: border-box;
+  }
+
+  .pricing-grid {
+    width: 100%;
+    max-width: none;
+    padding-inline: 0;
+  }
+
+  .pricing-card {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    flex: 0 0 100%;
+    box-sizing: border-box;
   }
 
   .hero-buttons {
@@ -1664,9 +1728,40 @@ body::before {
     transform: scale(1);
   }
 
+  .benefits-grid {
+    width: 100%;
+    padding-inline: 0;
+  }
+
+  .benefit-card {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    flex: 0 0 100%;
+    box-sizing: border-box;
+  }
+
+  .showcase-grid {
+    width: 100%;
+  }
+
+  .showcase-item {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    flex: 0 0 100%;
+    box-sizing: border-box;
+  }
+
   .footer-content {
     grid-template-columns: 1fr;
     gap: 2rem;
+  }
+
+  .footer,
+  .footer .container {
+    padding-left: 2rem;
+    padding-right: 2rem;
   }
 }
 

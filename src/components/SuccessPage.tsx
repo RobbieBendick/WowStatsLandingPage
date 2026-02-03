@@ -54,8 +54,9 @@ export default function SuccessPage() {
           lineHeight: '1.6',
         }}
       >
-        Congratulations! Your WoWStats Pro subscription is now active. You can
-        enjoy advanced analytics, arena stats, and premium features.
+        Congratulations! Your <span className='gradient-text'>WoWStats</span>{' '}
+        Pro subscription is now active. You can enjoy advanced analytics, arena
+        stats, and premium features.
       </p>
 
       {isTauri() && (
