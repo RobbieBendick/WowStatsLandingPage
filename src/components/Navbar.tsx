@@ -1,12 +1,15 @@
 import { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useLatestRelease } from '../hooks/useLatestRelease';
 import { loginWithDiscord, clearUser } from '../utils/auth';
 import { useSubscription } from '../hooks/useSubscription';
+import { ROUTE_PATHS } from '../bind-routes';
 
 // Get base URL for GitHub Pages compatibility
 const baseUrl = import.meta.env.BASE_URL;
 
 export default function Navbar() {
+  const navigate = useNavigate();
   const { downloadUrl, loading } = useLatestRelease();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -319,6 +322,58 @@ export default function Navbar() {
                           )}
                         </div>
                       </div>
+                    </div>
+
+                    {/* Settings button */}
+                    <div style={{ padding: '0.5rem 0.5rem 0' }}>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          navigate(ROUTE_PATHS.settings);
+                          setIsDropdownOpen(false);
+                          setIsMenuOpen(false);
+                        }}
+                        style={{
+                          width: '100%',
+                          padding: '0.75rem 1rem',
+                          background: 'transparent',
+                          border: 'none',
+                          color: 'var(--text-primary, rgba(255, 255, 255, 0.9))',
+                          textAlign: 'left',
+                          cursor: 'pointer',
+                          borderRadius: '8px',
+                          fontSize: '0.9rem',
+                          fontWeight: '500',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.75rem',
+                          transition: 'all 0.2s ease',
+                        }}
+                        onMouseEnter={e => {
+                          e.currentTarget.style.backgroundColor =
+                            'rgba(255, 255, 255, 0.08)';
+                          e.currentTarget.style.transform = 'translateX(2px)';
+                        }}
+                        onMouseLeave={e => {
+                          e.currentTarget.style.backgroundColor = 'transparent';
+                          e.currentTarget.style.transform = 'translateX(0)';
+                        }}
+                      >
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+                          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                        </svg>
+                        Settings
+                      </button>
                     </div>
 
                     {/* Logout button */}
