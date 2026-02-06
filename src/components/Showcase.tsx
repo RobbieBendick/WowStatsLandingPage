@@ -47,8 +47,36 @@ const matchAnalysis = [
   },
 ];
 
+// Matchup analysis (comps, matchups, etc.) — PNG by default; optional GIF on hover (modal always shows PNG)
+type MatchupImage = {
+  pngSrc: string;
+  gifSrc?: string;
+  title: string;
+};
+
+const matchupAnalysis: MatchupImage[] = [
+  {
+    pngSrc: `${baseUrl}screenshots/matchup-analysis/your-comps.png`,
+    gifSrc: `${baseUrl}screenshots/matchup-analysis/your-comps-gif.gif`,
+    title: 'Your Compositions',
+  },
+  {
+    pngSrc: `${baseUrl}screenshots/matchup-analysis/opponent-comps.png`,
+    gifSrc: `${baseUrl}screenshots/matchup-analysis/opponent-comp-matches-gif.gif`,
+    title: 'Opponent Compositions',
+  },
+];
+
 const matchPages = matchAnalysis;
-const allImages = [...dashboardViews, ...matchPages];
+// For modal: use GIF when available (matchup), else PNG
+const allImages: { src: string; title: string }[] = [
+  ...dashboardViews,
+  ...matchPages,
+  ...matchupAnalysis.map(m => ({
+    src: m.gifSrc || m.pngSrc,
+    title: m.title,
+  })),
+];
 
 export default function Showcase() {
   const [selectedImage, setSelectedImage] = useState<{
@@ -56,6 +84,9 @@ export default function Showcase() {
     title: string;
   } | null>(null);
   const [currentIndex, setCurrentIndex] = useState<number>(-1);
+  const [hoveredMatchupIndex, setHoveredMatchupIndex] = useState<number | null>(
+    null
+  );
 
   const openModal = (image: { src: string; title: string }, index: number) => {
     setSelectedImage(image);
@@ -103,6 +134,18 @@ export default function Showcase() {
   const handleImageClick = (image: { src: string; title: string }) => {
     const index = allImages.findIndex(img => img.src === image.src);
     openModal(image, index);
+  };
+
+  const handleMatchupImageClick = (image: MatchupImage) => {
+    const modalImage = {
+      src: image.gifSrc || image.pngSrc,
+      title: image.title,
+    };
+    const index = allImages.findIndex(
+      img =>
+        img.title === image.title && img.src === (image.gifSrc || image.pngSrc)
+    );
+    openModal(modalImage, index >= 0 ? index : allImages.length - 1);
   };
 
   return (
@@ -170,6 +213,68 @@ export default function Showcase() {
                   />
                 </div>
               ))}
+            </div>
+          </div>
+
+          <div className='showcase-section'>
+            <h3 className='showcase-section-title'>Matchup Analysis</h3>
+            <p className='showcase-section-subtitle'>
+              Compare compositions and analyze matchups at a glance
+            </p>
+            <div className='showcase-grid'>
+              {matchupAnalysis.map((image, index) => {
+                const isGifOnly =
+                  image.pngSrc.endsWith('.gif') && !image.gifSrc;
+                const isHovered = hoveredMatchupIndex === index;
+                const showGif = isHovered && (image.gifSrc || isGifOnly);
+                return (
+                  <div
+                    key={index}
+                    className='showcase-item showcase-item-matchup'
+                    onClick={() => handleMatchupImageClick(image)}
+                    onMouseEnter={() => setHoveredMatchupIndex(index)}
+                    onMouseLeave={() => setHoveredMatchupIndex(null)}
+                  >
+                    <div className='showcase-overlay'>
+                      <span className='showcase-overlay-text'>
+                        {image.title}
+                      </span>
+                      <span className='showcase-overlay-icon'>🔍</span>
+                      <span className='showcase-overlay-text'>
+                        Click to View
+                      </span>
+                    </div>
+                    {(image.gifSrc || isGifOnly) && !isHovered && (
+                      <span className='showcase-gif-badge' aria-hidden>
+                        Hover to play
+                      </span>
+                    )}
+                    {!isGifOnly && (
+                      <img
+                        src={image.pngSrc}
+                        alt={image.title}
+                        className='showcase-image showcase-image-png'
+                        loading='lazy'
+                      />
+                    )}
+                    {isGifOnly && !showGif && (
+                      <div className='showcase-image showcase-image-placeholder'>
+                        Hover to preview
+                      </div>
+                    )}
+                    {showGif && (
+                      <img
+                        src={image.gifSrc || image.pngSrc}
+                        alt={`${image.title} (animated)`}
+                        className={`showcase-image showcase-image-gif ${
+                          isGifOnly ? 'showcase-image-gif-standalone' : ''
+                        }`}
+                        loading='eager'
+                      />
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>

@@ -807,6 +807,78 @@ body::before {
   filter: brightness(1);
 }
 
+/* Matchup section: PNG by default, GIF on hover (modal always shows PNG) */
+.showcase-item-matchup {
+  position: relative;
+}
+
+.showcase-item-matchup .showcase-image-png {
+  position: relative;
+  z-index: 0;
+  transition: opacity 0.4s ease;
+}
+
+.showcase-item-matchup:hover .showcase-image-png {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.showcase-item-matchup .showcase-image-gif {
+  position: absolute;
+  inset: 1.5rem;
+  width: calc(100% - 3rem);
+  height: calc(100% - 3rem);
+  margin: auto;
+  object-fit: contain;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.showcase-item-matchup:hover .showcase-image-gif {
+  opacity: 1;
+}
+
+/* Small “hover to play” hint for matchup cards that have a GIF */
+.showcase-gif-badge {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 1;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 6px;
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+}
+
+.showcase-item-matchup .showcase-image-gif-standalone {
+  position: relative;
+  inset: auto;
+  width: auto;
+  height: auto;
+  opacity: 1;
+}
+
+.showcase-image-placeholder {
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.95rem;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
 .showcase-overlay {
   position: absolute;
   inset: 0;
@@ -825,6 +897,32 @@ body::before {
 
 .showcase-item:hover .showcase-overlay {
   opacity: 1;
+}
+
+/* Matchup Analysis section only: no overlay and no hover animations so the GIF is visible */
+.showcase-item.showcase-item-matchup:hover .showcase-overlay {
+  opacity: 0 !important;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.showcase-item.showcase-item-matchup:hover {
+  transform: none;
+}
+
+.showcase-item.showcase-item-matchup:hover .showcase-image {
+  transform: none;
+  box-shadow: none;
+}
+
+/* Medium: 2 per row, big cards */
+@media (max-width: 1061px) {
+  .showcase-item {
+    flex: 0 0 calc(50% - 1.25rem);
+    min-width: 280px;
+    max-width: none;
+    min-height: 320px;
+  }
 }
 
 .showcase-overlay-icon {
@@ -1003,6 +1101,13 @@ body::before {
   padding: 8rem 2rem;
   background: rgba(27, 27, 54, 0.3);
   backdrop-filter: blur(10px);
+  position: relative;
+}
+
+/* Advanced Match Tools – same padding as About (Why Choose WowStats) */
+.advanced-features {
+  padding: 8rem 2rem;
+  background: transparent;
   position: relative;
 }
 
@@ -1686,6 +1791,7 @@ body::before {
     width: 100%;
     margin-left: 0;
     margin-right: 0;
+    padding-inline: 0;
   }
 
   .feature-card {
