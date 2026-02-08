@@ -1,12 +1,19 @@
 import { useLatestRelease } from '../hooks/useLatestRelease';
-import { useCountUp } from '../hooks/useCountUp';
+import { useSlotStats } from '../hooks/useSlotStats';
+
+const HERO_STATS = [
+  { end: 1000, suffix: '+' },
+  { end: 4000, suffix: '+' },
+  { end: 100000, suffix: '+' },
+];
 
 export default function Hero() {
   const { downloadUrl, loading } = useLatestRelease();
-
-  const activeUsers = useCountUp({ end: 1000, suffix: '+' });
-  const charactersTracked = useCountUp({ end: 4000, suffix: '+' });
-  const dataPoints = useCountUp({ end: 100000, suffix: '+', duration: 2500 });
+  const { values: statValues, isSpinning } = useSlotStats({
+    stats: HERO_STATS,
+    spinDuration: 2800,
+    tickInterval: 70,
+  });
 
   const handleLearnMore = () => {
     const features = document.querySelector('#features');
@@ -18,22 +25,23 @@ export default function Hero() {
       e.preventDefault();
       return;
     }
-    // Let the browser handle the download
   };
 
   return (
-    <section className='hero'>
+    <section className='hero' aria-label='Hero'>
+      <div className='hero-backdrop' aria-hidden='true' />
       <div className='hero-content'>
+        <p className='hero-tagline'>WoW Arena Analytics</p>
         <h1 className='hero-title'>
-          Track Your WoW Arena
-          <span className='gradient-text'> Statistics</span>
+          Track your
+          <span className='gradient-text'> statistics</span>
         </h1>
         <p className='hero-subtitle'>
           Every arena match, broken down. Analyze comps, partners, and trends to
           understand why you win — and why you lose.
         </p>
         <p className='hero-byline'>
-          Built by the best PvP players in the world to help you climb.
+          Built by top PvP players to help you climb.
         </p>
         <div className='hero-buttons'>
           <a
@@ -47,63 +55,39 @@ export default function Hero() {
           >
             {loading ? 'Loading...' : 'Download for Windows'}
           </a>
-          <button className='btn-secondary' onClick={handleLearnMore}>
+          <button type='button' className='btn-secondary' onClick={handleLearnMore}>
             Learn More
           </button>
         </div>
         <div className='hero-stats'>
           <div className='stat-item'>
             <div
-              className='stat-number'
-              style={{
-                filter: `blur(${activeUsers.blur}px)`,
-                opacity: activeUsers.isAnimating
-                  ? 0.85 + (1 - activeUsers.blur) * 0.15
-                  : 1,
-                transform: activeUsers.isAnimating
-                  ? `scale(${0.98 + (1 - activeUsers.blur) * 0.02})`
-                  : 'scale(1)',
-              }}
+              className={`stat-number stat-slot${isSpinning ? ' stat-slot--spinning' : ''}`}
             >
-              {activeUsers.value}
+              {statValues[0]}
             </div>
             <div className='stat-label'>Active Users</div>
           </div>
           <div className='stat-item'>
             <div
-              className='stat-number'
-              style={{
-                filter: `blur(${charactersTracked.blur}px)`,
-                opacity: charactersTracked.isAnimating
-                  ? 0.85 + (1 - charactersTracked.blur) * 0.15
-                  : 1,
-                transform: charactersTracked.isAnimating
-                  ? `scale(${0.98 + (1 - charactersTracked.blur) * 0.02})`
-                  : 'scale(1)',
-              }}
+              className={`stat-number stat-slot${isSpinning ? ' stat-slot--spinning' : ''}`}
             >
-              {charactersTracked.value}
+              {statValues[1]}
             </div>
             <div className='stat-label'>Characters Tracked</div>
           </div>
           <div className='stat-item'>
             <div
-              className='stat-number'
-              style={{
-                filter: `blur(${dataPoints.blur}px)`,
-                opacity: dataPoints.isAnimating
-                  ? 0.85 + (1 - dataPoints.blur) * 0.15
-                  : 1,
-                transform: dataPoints.isAnimating
-                  ? `scale(${0.98 + (1 - dataPoints.blur) * 0.02})`
-                  : 'scale(1)',
-              }}
+              className={`stat-number stat-slot${isSpinning ? ' stat-slot--spinning' : ''}`}
             >
-              {dataPoints.value}
+              {statValues[2]}
             </div>
             <div className='stat-label'>Data Points</div>
           </div>
         </div>
+      </div>
+      <div className='hero-scroll-cue' aria-hidden='true'>
+        <span className='hero-scroll-dot' />
       </div>
     </section>
   );
