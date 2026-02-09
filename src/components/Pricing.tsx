@@ -20,7 +20,12 @@ const pricingOptions: PricingOption[] = [
     name: 'Free',
     price: 0,
     priceId: '', // No price ID for free tier
-    features: ['Basic Statistics', 'Match History', 'Character Tracking'],
+    features: [
+      'Basic Statistics',
+      'Match History',
+      'Matchup Analysis',
+      'Character Tracking',
+    ],
   },
   {
     id: '1-month',
@@ -29,7 +34,7 @@ const pricingOptions: PricingOption[] = [
     priceId: import.meta.env.VITE_ONE_MONTH_PRICE_ID,
     // paymentLink: import.meta.env.VITE_ONE_MONTH_PAYMENT_LINK, // Optional: Use payment link instead
     features: [
-      'Basic Statistics',
+      'All Free Features',
       'Death Logs',
       'Crowd Control Timelines',
       'Cooldown Timelines',
@@ -44,7 +49,7 @@ const pricingOptions: PricingOption[] = [
     priceId: import.meta.env.VITE_THREE_MONTH_PRICE_ID,
     // paymentLink: import.meta.env.VITE_THREE_MONTH_PAYMENT_LINK,
     features: [
-      'Basic Statistics',
+      'All Free Features',
       'Death Logs',
       'Crowd Control Timelines',
       'Cooldown Timelines',

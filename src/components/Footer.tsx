@@ -1,6 +1,10 @@
+import { useLatestRelease } from '../hooks/useLatestRelease';
+
 interface FooterLink {
   label: string;
   href: string;
+  isExternal?: boolean;
+  isDownload?: boolean;
 }
 
 interface FooterSection {
@@ -18,31 +22,53 @@ const footerSections: FooterSection[] = [
   {
     title: 'Product',
     links: [
-      { label: 'Features', href: '#features' },
+      { label: 'Features', href: '#advanced-features' },
       { label: 'Pricing', href: '#pricing' },
-      { label: 'Download', href: '#contact' },
+      { label: 'Download', href: '#', isDownload: true },
     ],
   },
   {
     title: 'Support',
     links: [
-      { label: 'Help Center', href: '#help' },
-      { label: 'Contact', href: '' },
-      { label: 'Privacy', href: '#privacy' },
+      {
+        label: 'Help Center',
+        href: 'https://discord.gg/gjvQKPWgEn',
+        isExternal: true,
+      },
+      {
+        label: 'Contact',
+        href: 'https://discord.gg/gjvQKPWgEn',
+        isExternal: true,
+      },
+      {
+        label: 'Privacy',
+        href: 'https://discord.gg/gjvQKPWgEn',
+        isExternal: true,
+      },
     ],
   },
 ];
 
 export default function Footer() {
+  const { downloadUrl } = useLatestRelease();
+
   const handleScroll = (
     e: React.MouseEvent<HTMLAnchorElement>,
-    href: string
+    href: string,
   ) => {
     e.preventDefault();
     const target = document.querySelector(href);
     if (target) {
       target.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+  };
+
+  const handleDownload = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    const url =
+      downloadUrl ||
+      'https://github.com/WoW-Stats/WoWStatsReleases/releases/latest';
+    window.open(url, '_blank');
   };
 
   return (
@@ -62,17 +88,28 @@ export default function Footer() {
               {section.links && (
                 <>
                   {section.links.map((link, linkIndex) => {
-                    if (link.label === 'Contact') {
+                    if (link.isDownload) {
                       return (
                         <a
                           key={linkIndex}
-                          style={{ cursor: 'pointer' }}
-                          onClick={() =>
-                            window.open(
-                              'https://discord.gg/gjvQKPWgEn',
-                              '_blank'
-                            )
+                          href={
+                            downloadUrl ||
+                            'https://github.com/WoW-Stats/WoWStatsReleases/releases/latest'
                           }
+                          onClick={handleDownload}
+                          download
+                        >
+                          {link.label}
+                        </a>
+                      );
+                    }
+                    if (link.isExternal) {
+                      return (
+                        <a
+                          key={linkIndex}
+                          href={link.href}
+                          target='_blank'
+                          rel='noopener noreferrer'
                         >
                           {link.label}
                         </a>
