@@ -1,4 +1,5 @@
 import { useLatestRelease } from '../hooks/useLatestRelease';
+import DownloadIcon from '@mui/icons-material/Download';
 
 export default function CTA() {
   const { downloadUrl, loading } = useLatestRelease();
@@ -40,6 +41,7 @@ export default function CTA() {
             download
             className='btn-primary large'
           >
+            <DownloadIcon sx={{ fontSize: '1.1rem' }} />
             {loading ? 'Loading...' : 'Download'}
           </a>
         </div>

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useLatestRelease } from '../hooks/useLatestRelease';
 import { loginWithDiscord, clearUser } from '../utils/auth';
 import { useSubscription } from '../hooks/useSubscription';
+import DownloadIcon from '@mui/icons-material/Download';
 import { ROUTE_PATHS } from '../bind-routes';
 
 // Get base URL for GitHub Pages compatibility
@@ -439,8 +440,18 @@ export default function Navbar() {
                   cursor: 'pointer',
                   fontSize: '0.9rem',
                   fontWeight: '600',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
                 }}
               >
+                <img
+                  src={`${baseUrl}discord.png`}
+                  alt=''
+                  width={20}
+                  height={20}
+                  style={{ display: 'block' }}
+                />
                 Login
               </button>
             )}
@@ -453,6 +464,7 @@ export default function Navbar() {
               download
               className='cta-button'
             >
+              <DownloadIcon sx={{ fontSize: '1rem' }} />
               {loading ? 'Loading...' : 'Download'}
             </a>
           </div>

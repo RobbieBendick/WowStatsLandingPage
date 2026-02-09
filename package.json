@@ -13,6 +13,10 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/icons-material": "^7.3.7",
+    "@mui/material": "^7.3.7",
     "@stripe/stripe-js": "^8.6.4",
     "@tauri-apps/api": "^2.9.1",
     "react": "^18.3.1",

@@ -382,7 +382,10 @@ body::before {
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
   position: relative;
   overflow: hidden;
   box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
@@ -535,7 +538,10 @@ body::before {
     transform 0.2s ease,
     box-shadow 0.2s ease;
   text-decoration: none;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
   position: relative;
   overflow: hidden;
   box-shadow: 0 4px 24px rgba(102, 126, 234, 0.4);
@@ -1789,7 +1795,7 @@ body::before {
     width: 100%;
     margin: 1rem 0 0 0;
     padding: 1rem;
-    text-align: center;
+    justify-content: center;
     border-radius: 12px;
   }
 

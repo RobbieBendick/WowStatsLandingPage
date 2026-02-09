@@ -1,5 +1,6 @@
 import { useLatestRelease } from '../hooks/useLatestRelease';
 import { useSlotStats } from '../hooks/useSlotStats';
+import DownloadIcon from '@mui/icons-material/Download';
 
 const HERO_STATS = [
   { end: 1000, suffix: '+' },
@@ -53,6 +54,7 @@ export default function Hero() {
             download
             className='btn-primary'
           >
+            <DownloadIcon sx={{ fontSize: '1.1rem' }} />
             {loading ? 'Loading...' : 'Download for Windows'}
           </a>
           <button type='button' className='btn-secondary' onClick={handleLearnMore}>
