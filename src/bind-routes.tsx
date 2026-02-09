@@ -8,7 +8,7 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 export const ROUTE_PATHS: any = {
   landing: '/',
   success: '/success',
-  cancel: '/cancel',
+  cancel: '/',
   settings: '/settings',
 };
 
@@ -32,12 +32,16 @@ export const routes: IRoute[] = [
   },
   {
     path: ROUTE_PATHS.cancel,
-    element: <div>Cancel</div>,
+    element: <App />,
   },
   {
     path: ROUTE_PATHS.settings,
-    element: <ProtectedRoute><SettingsPage /></ProtectedRoute>,
-  }
+    element: (
+      <ProtectedRoute>
+        <SettingsPage />
+      </ProtectedRoute>
+    ),
+  },
 ];
 
 export function BindRoutes(): JSX.Element {

@@ -27,7 +27,7 @@ function App() {
       // Redirect to Tauri app via deep link
       const tauriRedirectURL = `wowstats://auth/callback?user=${userParam}`;
       console.log(
-        'Detected Tauri OAuth callback on landing page, redirecting to app'
+        'Detected Tauri OAuth callback on landing page, redirecting to app',
       );
       window.location.href = tauriRedirectURL;
       return; // Don't process as web callback
@@ -49,7 +49,7 @@ function App() {
           window.history.replaceState(
             {},
             document.title,
-            window.location.pathname
+            window.location.pathname,
           );
 
           // Dispatch event to update all components
@@ -68,8 +68,8 @@ function App() {
     <>
       {/* Rising dots background (same as Tauri app) */}
       <div
-        className="animated-dots-wrapper"
-        aria-hidden="true"
+        className='animated-dots-wrapper'
+        aria-hidden='true'
         style={{
           position: 'fixed',
           top: 0,
@@ -80,11 +80,11 @@ function App() {
           pointerEvents: 'none',
         }}
       >
-        <div className="animated-background" />
-        <div className="animated-background-angle-1" />
-        <div className="animated-background-angle-2" />
-        <div className="animated-background-angle-3" />
-        <div className="animated-background-angle-4" />
+        <div className='animated-background' />
+        <div className='animated-background-angle-1' />
+        <div className='animated-background-angle-2' />
+        <div className='animated-background-angle-3' />
+        <div className='animated-background-angle-4' />
       </div>
       <Navbar />
       <main>
