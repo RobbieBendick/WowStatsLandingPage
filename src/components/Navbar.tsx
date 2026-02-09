@@ -49,7 +49,7 @@ export default function Navbar() {
 
   const handleScroll = (
     e: React.MouseEvent<HTMLAnchorElement>,
-    href: string
+    href: string,
   ) => {
     e.preventDefault();
     const target = document.querySelector(href);
@@ -292,9 +292,8 @@ export default function Navbar() {
                           {isSubscribed ? (
                             <span
                               style={{
-                                background:
-                                  'linear-gradient(135deg, #4ade80 0%, #22c55e 100%)',
-                                color: 'white',
+                                background: 'rgb(111, 111, 190)',
+                                color: '#FFFFFF',
                                 padding: '0.25rem 0.75rem',
                                 borderRadius: '12px',
                                 fontSize: '0.75rem',
@@ -308,7 +307,7 @@ export default function Navbar() {
                           ) : (
                             <span
                               style={{
-                                background: 'rgba(255, 255, 255, 0.1)',
+                                background: 'rgb(41, 41, 87)',
                                 color: 'var(--text-secondary)',
                                 padding: '0.25rem 0.75rem',
                                 borderRadius: '12px',
