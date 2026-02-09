@@ -66,6 +66,26 @@ function App() {
 
   return (
     <>
+      {/* Rising dots background (same as Tauri app) */}
+      <div
+        className="animated-dots-wrapper"
+        aria-hidden="true"
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          zIndex: 0,
+          pointerEvents: 'none',
+        }}
+      >
+        <div className="animated-background" />
+        <div className="animated-background-angle-1" />
+        <div className="animated-background-angle-2" />
+        <div className="animated-background-angle-3" />
+        <div className="animated-background-angle-4" />
+      </div>
       <Navbar />
       <main>
         <Hero />

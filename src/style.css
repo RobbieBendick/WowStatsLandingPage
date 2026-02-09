@@ -80,6 +80,177 @@ body::before {
   }
 }
 
+/* Rising dots animation (same as Tauri app) */
+@keyframes rise {
+  0% {
+    transform: translateY(100vh) translateX(0) rotate(7deg);
+    opacity: 0;
+  }
+  1% {
+    opacity: 1;
+  }
+  99% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100vh) translateX(-30px) rotate(7deg);
+    opacity: 0;
+  }
+}
+
+@keyframes rise-angle-1 {
+  0% {
+    transform: translateY(100vh) translateX(0) rotate(5deg);
+    opacity: 0;
+  }
+  1% {
+    opacity: 1;
+  }
+  99% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100vh) translateX(-30px) rotate(5deg);
+    opacity: 0;
+  }
+}
+
+@keyframes rise-angle-2 {
+  0% {
+    transform: translateY(100vh) translateX(0) rotate(-8deg);
+    opacity: 0;
+  }
+  1% {
+    opacity: 1;
+  }
+  99% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100vh) translateX(-30px) rotate(-8deg);
+    opacity: 0;
+  }
+}
+
+@keyframes rise-angle-3 {
+  0% {
+    transform: translateY(100vh) translateX(0) rotate(10deg);
+    opacity: 0;
+  }
+  1% {
+    opacity: 1;
+  }
+  99% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100vh) translateX(-30px) rotate(10deg);
+    opacity: 0;
+  }
+}
+
+@keyframes rise-angle-4 {
+  0% {
+    transform: translateY(100vh) translateX(0) rotate(-6deg);
+    opacity: 0;
+  }
+  1% {
+    opacity: 1;
+  }
+  99% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100vh) translateX(20px) rotate(-6deg);
+    opacity: 0;
+  }
+}
+
+.animated-background {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(
+    3px 3px at 47px 89px,
+    rgba(93, 93, 187, 0.6),
+    transparent
+  );
+  background-repeat: repeat;
+  background-size: 500px 500px;
+  opacity: 1;
+  animation: rise 90s linear infinite;
+}
+
+.animated-background-angle-1 {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(
+    2px 2px at 234px 187px,
+    rgba(93, 93, 187, 0.5),
+    transparent
+  );
+  background-repeat: repeat;
+  background-size: 500px 500px;
+  opacity: 1;
+  animation: rise-angle-1 90s linear infinite;
+  animation-delay: -22.5s;
+}
+
+.animated-background-angle-2 {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(
+    2px 2px at 412px 123px,
+    rgba(93, 93, 187, 0.7),
+    transparent
+  );
+  background-repeat: repeat;
+  background-size: 500px 500px;
+  opacity: 1;
+  animation: rise-angle-2 90s linear infinite;
+  animation-delay: -45s;
+}
+
+.animated-background-angle-3 {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(
+    3px 3px at 156px 298px,
+    rgba(93, 93, 187, 0.6),
+    transparent
+  );
+  background-repeat: repeat;
+  background-size: 500px 500px;
+  opacity: 1;
+  animation: rise-angle-3 90s linear infinite;
+  animation-delay: -67.5s;
+}
+
+.animated-background-angle-4 {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(
+    2px 2px at 378px 256px,
+    rgba(93, 93, 187, 0.55),
+    transparent
+  );
+  background-repeat: repeat;
+  background-size: 500px 500px;
+  opacity: 1;
+  animation: rise-angle-4 90s linear infinite;
+  animation-delay: -11.25s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animated-background,
+  .animated-background-angle-1,
+  .animated-background-angle-2,
+  .animated-background-angle-3,
+  .animated-background-angle-4 {
+    animation: none;
+    opacity: 0.4;
+  }
+}
+
 #app {
   width: 100%;
   margin: 0;
