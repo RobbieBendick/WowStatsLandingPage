@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { isTauri } from '@tauri-apps/api/core';
 
 export default function SuccessPage() {
@@ -58,6 +59,17 @@ export default function SuccessPage() {
         Pro subscription is now active. You can enjoy advanced analytics, arena
         stats, and premium features.
       </p>
+
+      <Link
+        to='/'
+        className='btn-secondary'
+        style={{
+          marginTop: '0.5rem',
+          textDecoration: 'none',
+        }}
+      >
+        Back home
+      </Link>
 
       {isTauri() && (
         <div
