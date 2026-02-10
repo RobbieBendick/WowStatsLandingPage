@@ -41,7 +41,7 @@ export default function CTA() {
             download
             className='btn-primary large'
           >
-            <DownloadIcon sx={{ fontSize: '1.1rem' }} />
+            <DownloadIcon sx={{ fontSize: '1.1rem', marginTop: '5px' }} />
             {loading ? 'Loading...' : 'Download'}
           </a>
         </div>

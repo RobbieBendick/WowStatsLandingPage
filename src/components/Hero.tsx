@@ -54,10 +54,14 @@ export default function Hero() {
             download
             className='btn-primary'
           >
-            <DownloadIcon sx={{ fontSize: '1.1rem' }} />
+            <DownloadIcon sx={{ fontSize: '1.1rem', marginTop: '5px' }} />
             {loading ? 'Loading...' : 'Download for Windows'}
           </a>
-          <button type='button' className='btn-secondary' onClick={handleLearnMore}>
+          <button
+            type='button'
+            className='btn-secondary'
+            onClick={handleLearnMore}
+          >
             Learn More
           </button>
         </div>

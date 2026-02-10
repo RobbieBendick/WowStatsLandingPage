@@ -464,7 +464,7 @@ export default function Navbar() {
               download
               className='cta-button'
             >
-              <DownloadIcon sx={{ fontSize: '1rem' }} />
+              <DownloadIcon sx={{ fontSize: '1rem', marginTop: '5px' }} />
               {loading ? 'Loading...' : 'Download'}
             </a>
           </div>
