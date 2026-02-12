@@ -15,7 +15,7 @@ const advancedFeatures: Feature[] = [
     icon: '🛡️',
     title: 'Resists & Missed Spells',
     description:
-      'Analyze which spells were resisted or missed by your opponents, giving insight into what abilities were less effective and how to adjust your strategy.',
+      'Analyze which spells were resisted or missed by you or your opponents, giving insight into what abilities were less effective and how to adjust your strategy.',
   },
   {
     icon: '⏱️',
