@@ -678,6 +678,7 @@ body::before {
 }
 
 .hero-content {
+  width: 100%;
   max-width: 880px;
   margin: 0 auto;
   text-align: center;
@@ -914,6 +915,8 @@ body::before {
   letter-spacing: -0.03em;
   font-variant-numeric: tabular-nums;
   min-height: 2.5rem;
+  /* Reserve width for largest value ("100,000+") so layout doesn't shift during animation */
+  min-width: 9ch;
   display: flex;
   align-items: center;
   justify-content: center;
