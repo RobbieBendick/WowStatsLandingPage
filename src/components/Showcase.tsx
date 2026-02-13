@@ -236,9 +236,9 @@ export default function Showcase() {
           <div className='showcase-section'>
             <h3 className='showcase-section-title'>Spell Statistics</h3>
             <p className='showcase-section-subtitle'>
-              Break down crits, resists, and misses from your perspective or
-              from your opponent’s abilities used against you, with opponent
-              class filters.
+              Break down all of your crits, resists, and misses from your
+              perspective or from your opponent’s abilities used against you
+              across every game, with advanced filters.
             </p>
             <div className='showcase-grid'>
               {spellStatsViews.map((image, index) => (
