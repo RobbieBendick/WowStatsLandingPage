@@ -17,7 +17,7 @@ export default function Hero() {
   });
 
   const handleLearnMore = () => {
-    const features = document.querySelector('#about');
+    const features = document.querySelector('#advanced-features');
     features?.scrollIntoView({ behavior: 'smooth' });
   };
 
