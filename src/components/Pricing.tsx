@@ -121,7 +121,17 @@ export default function Pricing() {
   };
 
   if (checkingAuth) {
-    return <div>Loading...</div>;
+    return (
+      <section id='pricing' className='pricing'>
+        <div className='pricing-loading'>
+          <div className='pricing-loading-card'>
+            <div className='pricing-loading-spinner' aria-hidden />
+            <p className='pricing-loading-text'>Loading pricing</p>
+            <p className='pricing-loading-subtext'>Checking your subscription…</p>
+          </div>
+        </div>
+      </section>
+    );
   }
 
   return (
