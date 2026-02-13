@@ -15,7 +15,15 @@ export function SettingsPage() {
   }
 
   if (isLoading) {
-    return <div>Loading subscription info...</div>;
+    return (
+      <div className="settings-loading">
+        <div className="settings-loading-card">
+          <div className="settings-loading-spinner" aria-hidden />
+          <p className="settings-loading-text">Loading subscription status</p>
+          <p className="settings-loading-subtext">Checking your Pro access…</p>
+        </div>
+      </div>
+    );
   }
 
   const handleUnsubscribe = () => {

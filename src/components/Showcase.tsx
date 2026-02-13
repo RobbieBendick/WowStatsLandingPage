@@ -15,7 +15,7 @@ const dashboardViews = [
   },
   {
     src: `${baseUrl}screenshots/dashboard/wowstats-dashboard-3.png`,
-    title: 'User Stats & Rankings',
+    title: 'Frequently Played Compositions',
   },
 ];
 
@@ -47,6 +47,22 @@ const matchAnalysis = [
   },
 ];
 
+// Spell statistics screenshots
+const spellStatsViews = [
+  {
+    src: `${baseUrl}screenshots/spell-stats/spell-stats-no-filters.png`,
+    title: 'Spell Statistics Overview',
+  },
+  {
+    src: `${baseUrl}screenshots/spell-stats/spell-stats-filters-top.png`,
+    title: 'Filters Active - Top View',
+  },
+  {
+    src: `${baseUrl}screenshots/spell-stats/spell-stats-filters-bottom.png`,
+    title: 'Filters Active - Bottom View',
+  },
+];
+
 // Matchup analysis (comps, matchups, etc.) — PNG by default; optional GIF on hover (modal always shows PNG)
 type MatchupImage = {
   pngSrc: string;
@@ -72,6 +88,7 @@ const matchPages = matchAnalysis;
 const allImages: { src: string; title: string }[] = [
   ...dashboardViews,
   ...matchPages,
+  ...spellStatsViews,
   ...matchupAnalysis.map(m => ({
     src: m.gifSrc || m.pngSrc,
     title: m.title,
@@ -85,7 +102,7 @@ export default function Showcase() {
   } | null>(null);
   const [currentIndex, setCurrentIndex] = useState<number>(-1);
   const [hoveredMatchupIndex, setHoveredMatchupIndex] = useState<number | null>(
-    null
+    null,
   );
 
   const openModal = (image: { src: string; title: string }, index: number) => {
@@ -143,7 +160,7 @@ export default function Showcase() {
     };
     const index = allImages.findIndex(
       img =>
-        img.title === image.title && img.src === (image.gifSrc || image.pngSrc)
+        img.title === image.title && img.src === (image.gifSrc || image.pngSrc),
     );
     openModal(modalImage, index >= 0 ? index : allImages.length - 1);
   };
@@ -195,6 +212,35 @@ export default function Showcase() {
             </p>
             <div className='showcase-grid'>
               {matchPages.map((image, index) => (
+                <div
+                  key={index}
+                  className='showcase-item'
+                  onClick={() => handleImageClick(image)}
+                >
+                  <div className='showcase-overlay'>
+                    <span className='showcase-overlay-text'>{image.title}</span>
+                    <span className='showcase-overlay-icon'>🔍</span>
+                    <span className='showcase-overlay-text'>Click to View</span>
+                  </div>
+                  <img
+                    src={image.src}
+                    alt={image.title}
+                    className='showcase-image'
+                    loading='lazy'
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className='showcase-section'>
+            <h3 className='showcase-section-title'>Spell Statistics</h3>
+            <p className='showcase-section-subtitle'>
+              Track resists, misses, and critical hits by perspective and
+              opponent class
+            </p>
+            <div className='showcase-grid'>
+              {spellStatsViews.map((image, index) => (
                 <div
                   key={index}
                   className='showcase-item'

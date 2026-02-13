@@ -17,7 +17,7 @@ export default function Hero() {
   });
 
   const handleLearnMore = () => {
-    const features = document.querySelector('#features');
+    const features = document.querySelector('#about');
     features?.scrollIntoView({ behavior: 'smooth' });
   };
 
@@ -61,6 +61,7 @@ export default function Hero() {
             type='button'
             className='btn-secondary'
             onClick={handleLearnMore}
+            aria-label='Learn More'
           >
             Learn More
           </button>
