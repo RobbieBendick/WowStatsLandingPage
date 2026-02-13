@@ -16,11 +16,11 @@ export function SettingsPage() {
 
   if (isLoading) {
     return (
-      <div className="settings-loading">
-        <div className="settings-loading-card">
-          <div className="settings-loading-spinner" aria-hidden />
-          <p className="settings-loading-text">Loading subscription status</p>
-          <p className="settings-loading-subtext">Checking your Pro access…</p>
+      <div className='settings-loading'>
+        <div className='settings-loading-card'>
+          <div className='settings-loading-spinner' aria-hidden />
+          <p className='settings-loading-text'>Loading subscription status</p>
+          <p className='settings-loading-subtext'>Checking your Pro access…</p>
         </div>
       </div>
     );
@@ -100,7 +100,7 @@ export function SettingsPage() {
           <p>
             Pro access ends on:{' '}
             {new Date(
-              subscriptionStatus.current_period_end
+              subscriptionStatus.current_period_end,
             ).toLocaleDateString()}
           </p>
         )}
@@ -114,10 +114,10 @@ export function SettingsPage() {
           {isUnsubscribing
             ? 'Unsubscribing...'
             : isCancelAtPeriodEnd
-            ? 'Subscription Cancelled'
-            : isInactive
-            ? 'Not subscribed'
-            : 'Unsubscribe'}
+              ? 'Subscription Cancelled'
+              : isInactive
+                ? 'Not subscribed'
+                : 'Unsubscribe'}
         </button>
 
         {isComped ? (
@@ -134,7 +134,7 @@ export function SettingsPage() {
               <strong>
                 {subscriptionStatus?.current_period_end
                   ? new Date(
-                      subscriptionStatus.current_period_end
+                      subscriptionStatus.current_period_end,
                     ).toLocaleDateString()
                   : 'the end of your billing period'}
               </strong>
