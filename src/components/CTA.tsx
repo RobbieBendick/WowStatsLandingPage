@@ -30,7 +30,8 @@ export default function CTA() {
             >
               Discord
             </a>
-            . Expect frequent updates and ongoing improvements.
+            . Expect regular updates with continuous improvements and new
+            features.
           </p>
           <a
             href={
