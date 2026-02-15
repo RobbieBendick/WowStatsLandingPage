@@ -49,7 +49,6 @@ export function BindRoutes(): JSX.Element {
     <Router>
       <Routes>
         {routes.map(route => {
-          console.log('route', route);
           return (
             <Route key={route.path} path={route.path} element={route.element} />
           );
