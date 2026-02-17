@@ -9,7 +9,7 @@ const advancedFeatures: Feature[] = [
     icon: '💀',
     title: 'Death Log',
     description:
-      'See every damage event leading to player deaths in detail, including damage taken, and abilities used. Perfect for learning from mistakes and improving performance.',
+      'See every damage and healing event leading to player deaths, including damage taken and abilities used. Perfect for learning from mistakes and improving performance.',
   },
   {
     icon: '🛡️',
