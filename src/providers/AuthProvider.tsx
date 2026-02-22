@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 
-const API_URL = import.meta.env.VITE_API_URL || 'https://wowstats-backend.vercel.app';
+const API_URL =
+  import.meta.env.VITE_API_URL || 'https://wowstats-backend.vercel.app';
 
 export interface DiscordUser {
   id: string;
@@ -32,22 +33,25 @@ const getStoredUser = (): DiscordUser | null => {
   }
 };
 
-const saveUser = (user: DiscordUser) => localStorage.setItem('discord_user', JSON.stringify(user));
 const clearUser = () => localStorage.removeItem('discord_user');
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<DiscordUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-//   const navigate = useNavigate();
+  //   const navigate = useNavigate();
 
   useEffect(() => {
-    // Load user from localStorage
+    // Load user from localStorage on mount
     const storedUser = getStoredUser();
     setUser(storedUser);
     setIsLoading(false);
 
-    // OAuth callback is handled in App.tsx (exchange ?code= and then refreshSubscription)
+    // When login completes in same tab, App.tsx dispatches userAuthChange (storage event only fires from other tabs)
+    const handleAuthChange = () => {
+      setUser(getStoredUser());
+    };
+    window.addEventListener('userAuthChange', handleAuthChange);
 
     // Listen for storage changes in other tabs/windows
     const handleStorageChange = (e: StorageEvent) => {
@@ -58,7 +62,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
     window.addEventListener('storage', handleStorageChange);
 
-    return () => window.removeEventListener('storage', handleStorageChange);
+    return () => {
+      window.removeEventListener('userAuthChange', handleAuthChange);
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, []);
 
   const signInWithDiscord = () => {
@@ -73,7 +80,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     window.dispatchEvent(new Event('userAuthChange'));
   };
 
-  const value: AuthContextType = { user, isLoading, signInWithDiscord, signOut, error };
+  const value: AuthContextType = {
+    user,
+    isLoading,
+    signInWithDiscord,
+    signOut,
+    error,
+  };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

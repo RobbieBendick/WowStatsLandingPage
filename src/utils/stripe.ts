@@ -2,6 +2,7 @@
 // Install: npm install @stripe/stripe-js
 
 import { loadStripe } from '@stripe/stripe-js';
+import { authFetch } from './auth';
 
 const API_URL =
   import.meta.env.VITE_API_URL || 'https://wowstats-backend.vercel.app';
@@ -23,12 +24,12 @@ export const getStripe = () => {
   return stripePromise;
 };
 
-// Create checkout session via backend
+// Create checkout session via backend (sends session so backend can verify user)
 export const createCheckoutSession = async (
   userId: string,
   priceId: string,
 ) => {
-  const response = await fetch(`${API_URL}/api/stripe/create-checkout`, {
+  const response = await authFetch(`${API_URL}/api/stripe/create-checkout`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
