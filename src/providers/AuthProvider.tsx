@@ -47,22 +47,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(storedUser);
     setIsLoading(false);
 
-    // Check for OAuth callback
-    const urlParams = new URLSearchParams(window.location.search);
-    const userParam = urlParams.get('user');
-    if (userParam) {
-      try {
-        const decodedParam = decodeURIComponent(userParam);
-        const userJSON = atob(decodedParam);
-        const user: DiscordUser = JSON.parse(userJSON);
-        saveUser(user);
-        setUser(user);
-        window.history.replaceState({}, document.title, window.location.pathname);
-      } catch (err) {
-        console.error('Failed to parse user data from OAuth callback:', err);
-        setError('Failed to parse user data');
-      }
-    }
+    // OAuth callback is handled in App.tsx (exchange ?code= and then refreshSubscription)
 
     // Listen for storage changes in other tabs/windows
     const handleStorageChange = (e: StorageEvent) => {
@@ -78,8 +63,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signInWithDiscord = () => {
     setError(null);
-    const oauthUrl = `${API_URL}/api/auth/discord?client=web`;
-    window.location.href = oauthUrl; // Redirect to backend OAuth
+    window.location.href = `${API_URL}/api/auth/discord?client=web`;
   };
 
   const signOut = () => {

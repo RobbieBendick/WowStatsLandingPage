@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../providers/AuthProvider';
+import { authFetch } from '../utils/auth';
 import type { SubscriptionStatus } from './useSubscription';
 
 const API_URL = import.meta.env.VITE_API_URL || 'https://wowstats-backend.vercel.app';
@@ -22,7 +23,7 @@ export function useSubscriptionStatus() {
       setError(null);
 
       try {
-        const res = await fetch(`${API_URL}/api/subscription/check?id=${user.id}`);
+        const res = await authFetch(`${API_URL}/api/subscription/check`);
         if (!res.ok) throw new Error(`Server error: ${res.status}`);
         const data: SubscriptionStatus = await res.json();
         setSubscription(data);

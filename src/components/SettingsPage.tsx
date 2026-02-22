@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useSubscription } from '../hooks/useSubscription';
+import { authFetch } from '../utils/auth';
 
 const API_URL =
   import.meta.env.VITE_API_URL || 'https://wowstats-backend.vercel.app';
@@ -45,7 +46,7 @@ export function SettingsPage() {
     setError(null);
 
     try {
-      const res = await fetch(`${API_URL}/api/subscription/unsubscribe`, {
+      const res = await authFetch(`${API_URL}/api/subscription/unsubscribe`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ user_id: userId }),

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { getCurrentUser } from '../utils/auth'
+import { getCurrentUser, authFetch } from '../utils/auth'
 import type { DiscordUser } from '../utils/auth'
 
 const API_URL = import.meta.env.VITE_API_URL || 'https://wowstats-backend.vercel.app'
@@ -37,10 +37,8 @@ export function useSubscription(): UseSubscriptionReturn {
       setUser(currentUser)
 
       try {
-        // Fetch subscription status from backend
-        const res = await fetch(`${API_URL}/api/subscription/check?id=${currentUser.id}`, {
-          method: 'GET'
-        })
+        // Fetch subscription status from backend (cookie or Bearer)
+        const res = await authFetch(`${API_URL}/api/subscription/check`)
         if (!res.ok) throw new Error(`Failed to check subscription: ${res.statusText}`)
 
         const status: SubscriptionStatus = await res.json()

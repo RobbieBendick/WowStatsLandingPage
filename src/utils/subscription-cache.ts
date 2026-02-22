@@ -1,3 +1,5 @@
+import { authFetch } from './auth';
+
 /** Cache subscription result per user to avoid repeated backend calls. Persists in localStorage so it survives full page refresh. */
 const SUBSCRIPTION_CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 1 day
 const STORAGE_KEY_PREFIX = 'wowstats_subscription_';
@@ -97,14 +99,11 @@ export async function fetchSubscriptionStatus(
     import.meta.env.VITE_API_URL || 'https://wowstats-backend.vercel.app';
 
   try {
-    const res = await fetch(
-      `${API_URL}/api/subscription/check?id=${userId}`,
-      { method: 'GET' },
-    );
+    const res = await authFetch(`${API_URL}/api/subscription/check`);
     if (!res.ok) return null;
     const status: SubscriptionStatus = await res.json();
     if (status && typeof status === 'object' && status.user_id) {
-      setCachedSubscription(userId, status);
+      setCachedSubscription(status.user_id, status);
     }
     return status;
   } catch (err) {

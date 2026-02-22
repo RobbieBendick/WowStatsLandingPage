@@ -1,6 +1,5 @@
 const API_URL =
   import.meta.env.VITE_API_URL || 'https://wowstats-backend.vercel.app';
-console.log('AUTH FILE PATH:', import.meta.url);
 export interface DiscordUser {
   id: string;
   username: string;
@@ -9,6 +8,8 @@ export interface DiscordUser {
   // Cached UI state only – real truth comes from Stripe
   subscribed: boolean;
 }
+
+const SESSION_TOKEN_KEY = 'wowstats_session_token';
 
 /* =========================
    Local user helpers
@@ -33,7 +34,21 @@ export const saveUser = (user: DiscordUser) => {
 // Clear cached user
 export const clearUser = () => {
   localStorage.removeItem('discord_user');
+  localStorage.removeItem(SESSION_TOKEN_KEY);
 };
+
+export const getSessionToken = (): string | null =>
+  localStorage.getItem(SESSION_TOKEN_KEY);
+const saveSessionToken = (token: string) =>
+  localStorage.setItem(SESSION_TOKEN_KEY, token);
+
+/** Fetch with session (cookie or Bearer token) for authenticated API calls. */
+export function authFetch(url: string, init: RequestInit = {}): Promise<Response> {
+  const token = getSessionToken();
+  const headers = new Headers(init.headers);
+  if (token) headers.set('Authorization', `Bearer ${token}`);
+  return fetch(url, { ...init, credentials: 'include', headers });
+}
 
 /* =========================
    Auth
@@ -41,7 +56,42 @@ export const clearUser = () => {
 
 // Start Discord OAuth
 export const loginWithDiscord = () => {
-  window.location.href = `${API_URL}/api/auth/discord`;
+  window.location.href = `${API_URL}/api/auth/discord?client=web`;
+};
+
+/** Exchange one-time ?code= from OAuth redirect for session and user. Returns true on success. */
+export const exchangeCodeAndSaveUser = async (code: string): Promise<boolean> => {
+  // Use /api/auth/exchange (Vercel rewrites to session?__route=exchange; query is preserved)
+  const url = `${API_URL}/api/auth/exchange?code=${encodeURIComponent(code)}`;
+  try {
+    const res = await fetch(url, {
+      method: 'GET',
+      credentials: 'include',
+    });
+    if (!res.ok) {
+      const text = await res.text();
+      console.error('[auth] exchange failed', res.status, res.statusText, text);
+      return false;
+    }
+    const data = await res.json();
+    const u = data.user;
+    if (!u?.id) {
+      console.error('[auth] exchange response missing user', data);
+      return false;
+    }
+    saveUser({
+      id: u.id,
+      username: u.username ?? '',
+      email: u.email ?? '',
+      avatar: u.avatar,
+      subscribed: false,
+    });
+    if (data.session_token) saveSessionToken(data.session_token);
+    return true;
+  } catch (err) {
+    console.error('[auth] exchange error', err);
+    return false;
+  }
 };
 
 /* =========================
@@ -58,10 +108,10 @@ interface SubscriptionStatus {
   stripe_subscription_id?: string;
 }
 
-// Check subscription from backend
-export const checkSubscription = async (userId: string): Promise<boolean> => {
+// Check subscription from backend (uses session cookie or Bearer token)
+export const checkSubscription = async (_userId?: string): Promise<boolean> => {
   try {
-    const res = await fetch(`${API_URL}/api/subscription/check?id=${userId}`);
+    const res = await authFetch(`${API_URL}/api/subscription/check`);
 
     if (!res.ok) {
       console.error('Subscription check failed:', await res.text());

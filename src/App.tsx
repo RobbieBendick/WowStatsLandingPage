@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Showcase from './components/Showcase';
@@ -7,65 +7,124 @@ import About from './components/About';
 import Pricing from './components/Pricing';
 import CTA from './components/CTA';
 import Footer from './components/Footer';
-import { saveUser, refreshSubscription } from './utils/auth';
-import type { DiscordUser } from './utils/auth';
+import { exchangeCodeAndSaveUser, refreshSubscription, loginWithDiscord } from './utils/auth';
 import './style.css';
 
 function App() {
-  useEffect(() => {
-    // Handle OAuth callback
-    const urlParams = new URLSearchParams(window.location.search);
-    const userParam = urlParams.get('user');
-    const clientType = urlParams.get('client'); // Check if this is a Tauri callback
+  const [authError, setAuthError] = useState<string | null>(null);
+  const [isExchanging, setIsExchanging] = useState(false);
+  const exchangeStarted = useRef(false);
 
-    // Check if we're in Tauri app - if so, don't do web redirect logic
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
+    const clientType = urlParams.get('client');
     const isTauri = typeof window !== 'undefined' && '__TAURI__' in window;
 
-    // If this is explicitly marked as a Tauri callback, redirect to the app
-    // This is a safety net in case a Tauri OAuth callback somehow ends up on the landing page
-    if (userParam && clientType === 'tauri' && !isTauri) {
-      // Redirect to Tauri app via deep link
-      const tauriRedirectURL = `wowstats://auth/callback?user=${userParam}`;
-      console.log(
-        'Detected Tauri OAuth callback on landing page, redirecting to app',
-      );
-      window.location.href = tauriRedirectURL;
-      return; // Don't process as web callback
+    if (code && clientType === 'tauri' && !isTauri) {
+      window.location.href = `wowstats://auth/callback?code=${encodeURIComponent(code)}`;
+      return;
     }
 
-    // Normal web callback processing
-    if (userParam) {
-      try {
-        // Decode base64 user data
-        const userJSON = atob(userParam);
-        const user: DiscordUser = JSON.parse(userJSON);
-
-        // Save user first
-        saveUser(user);
-
-        // Refresh subscription status (will update user in localStorage)
-        refreshSubscription().then(() => {
-          // Clean up URL
-          window.history.replaceState(
-            {},
-            document.title,
-            window.location.pathname,
-          );
-
-          // Dispatch event to update all components
+    if (code && !exchangeStarted.current) {
+      exchangeStarted.current = true;
+      setIsExchanging(true);
+      setAuthError(null);
+      exchangeCodeAndSaveUser(code).then((ok) => {
+        setIsExchanging(false);
+        if (ok) {
+          const path = window.location.pathname || '/';
+          window.history.replaceState({}, document.title, path);
           window.dispatchEvent(new Event('userAuthChange'));
-        });
-      } catch (error) {
-        console.error('Failed to parse user data from callback:', error);
-      }
-    } else {
-      // Check if user is already logged in and refresh subscription status
+          setTimeout(() => window.dispatchEvent(new Event('userAuthChange')), 50);
+          refreshSubscription();
+        } else {
+          setAuthError('Login failed. Please try again.');
+          window.history.replaceState({}, document.title, window.location.pathname || '/');
+        }
+      });
+    } else if (!code) {
       refreshSubscription();
     }
   }, []);
 
   return (
     <>
+      {authError && (
+        <div
+          role="alert"
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            zIndex: 9999,
+            background: '#d32f2f',
+            color: '#fff',
+            padding: '12px 16px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: 16,
+            boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+          }}
+        >
+          <span>{authError}</span>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button
+              type="button"
+              onClick={() => {
+                setAuthError(null);
+                loginWithDiscord();
+              }}
+              style={{
+                padding: '6px 12px',
+                background: 'rgba(255,255,255,0.2)',
+                border: '1px solid rgba(255,255,255,0.5)',
+                color: '#fff',
+                borderRadius: 4,
+                cursor: 'pointer',
+              }}
+            >
+              Try again
+            </button>
+            <button
+              type="button"
+              onClick={() => setAuthError(null)}
+              style={{
+                padding: '6px 12px',
+                background: 'transparent',
+                border: '1px solid rgba(255,255,255,0.5)',
+                color: '#fff',
+                borderRadius: 4,
+                cursor: 'pointer',
+              }}
+            >
+              Dismiss
+            </button>
+          </div>
+        </div>
+      )}
+      {isExchanging && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 9998,
+            background: 'rgba(0,0,0,0.4)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#fff',
+            fontSize: 18,
+          }}
+        >
+          Logging in…
+        </div>
+      )}
       {/* Rising dots background (same as Tauri app) */}
       <div
         className='animated-dots-wrapper'
