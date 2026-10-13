@@ -1,16 +1,15 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useRef, useState } from 'react';
+import {
+  getCurrentUser,
+  getSessionToken,
+  refreshSession,
+  SESSION_REFRESH_MS,
+  clearUser,
+} from '../utils/auth';
+import type { DiscordUser } from '../utils/auth';
 
 const API_URL =
   import.meta.env.VITE_API_URL || 'https://wowstats-backend.vercel.app';
-
-export interface DiscordUser {
-  id: string;
-  username: string;
-  discriminator?: string;
-  avatar?: string;
-  email?: string;
-  subscribed: boolean;
-}
 
 interface AuthContextType {
   user: DiscordUser | null;
@@ -22,49 +21,73 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// LocalStorage helpers
-const getStoredUser = (): DiscordUser | null => {
-  const userStr = localStorage.getItem('discord_user');
-  if (!userStr) return null;
-  try {
-    return JSON.parse(userStr);
-  } catch {
-    return null;
-  }
-};
-
-const clearUser = () => localStorage.removeItem('discord_user');
-
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<DiscordUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  //   const navigate = useNavigate();
+  const lastRefreshAtRef = useRef(0);
 
   useEffect(() => {
-    // Load user from localStorage on mount
-    const storedUser = getStoredUser();
+    const storedUser = getCurrentUser();
     setUser(storedUser);
-    setIsLoading(false);
 
-    // When login completes in same tab, App.tsx dispatches userAuthChange (storage event only fires from other tabs)
+    const syncSession = async (isInitial: boolean) => {
+      const result = await refreshSession();
+      lastRefreshAtRef.current = Date.now();
+      if (result === 'expired') {
+        setUser(null);
+      } else {
+        setUser(getCurrentUser());
+      }
+      if (isInitial) {
+        setIsLoading(false);
+      }
+    };
+
     const handleAuthChange = () => {
-      setUser(getStoredUser());
+      setUser(getCurrentUser());
     };
     window.addEventListener('userAuthChange', handleAuthChange);
 
-    // Listen for storage changes in other tabs/windows
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === 'discord_user') {
-        const newUser = e.newValue ? JSON.parse(e.newValue) : null;
-        setUser(newUser);
+        setUser(e.newValue ? JSON.parse(e.newValue) : null);
       }
     };
     window.addEventListener('storage', handleStorageChange);
 
+    const onExpired = () => {
+      setUser(null);
+    };
+    window.addEventListener('sessionExpired', onExpired);
+
+    const interval = window.setInterval(() => {
+      if (getCurrentUser() || getSessionToken()) {
+        syncSession(false);
+      }
+    }, SESSION_REFRESH_MS);
+
+    const onVisible = () => {
+      if (document.visibilityState !== 'visible') return;
+      if (Date.now() - lastRefreshAtRef.current < SESSION_REFRESH_MS / 2) return;
+      if (getCurrentUser() || getSessionToken()) {
+        syncSession(false);
+      }
+    };
+    document.addEventListener('visibilitychange', onVisible);
+
+    if (!storedUser && !getSessionToken()) {
+      setIsLoading(false);
+    } else {
+      syncSession(true);
+    }
+
     return () => {
       window.removeEventListener('userAuthChange', handleAuthChange);
       window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('sessionExpired', onExpired);
+      document.removeEventListener('visibilitychange', onVisible);
+      window.clearInterval(interval);
     };
   }, []);
 

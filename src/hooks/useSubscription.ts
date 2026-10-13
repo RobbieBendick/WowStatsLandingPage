@@ -39,6 +39,12 @@ export function useSubscription(): UseSubscriptionReturn {
       try {
         // Fetch subscription status from backend (cookie or Bearer)
         const res = await authFetch(`${API_URL}/api/subscription/check`)
+        if (res.status === 401) {
+          window.dispatchEvent(new Event('sessionExpired'))
+          setSubscriptionStatus(null)
+          setIsSubscribed(false)
+          return
+        }
         if (!res.ok) throw new Error(`Failed to check subscription: ${res.statusText}`)
 
         const status: SubscriptionStatus = await res.json()
@@ -49,9 +55,10 @@ export function useSubscription(): UseSubscriptionReturn {
         const compedUntil = status.comped_until ? new Date(status.comped_until) : null
 
         const active =
+          status.active === true ||
           status.status === 'active' ||
-          (status.status === 'comped' && compedUntil && compedUntil > now) ||
-          (status.status === 'trialing' && periodEnd && periodEnd > now)
+          (status.status === 'comped' && !!compedUntil && compedUntil > now) ||
+          (status.status === 'trialing' && !!periodEnd && periodEnd > now)
 
         setIsSubscribed(active ? true : false)
 

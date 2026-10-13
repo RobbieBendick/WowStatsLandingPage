@@ -94,6 +94,47 @@ export const exchangeCodeAndSaveUser = async (code: string): Promise<boolean> =>
   }
 };
 
+const SESSION_REFRESH_MS = 12 * 60 * 60 * 1000;
+
+export async function refreshSession(): Promise<'ok' | 'expired' | 'error'> {
+  const stored = getCurrentUser();
+  const token = getSessionToken();
+  if (!stored && !token) {
+    return 'expired';
+  }
+
+  try {
+    const res = await authFetch(`${API_URL}/api/auth/refresh`, {
+      method: 'POST',
+    });
+    if (res.status === 401) {
+      clearUser();
+      window.dispatchEvent(new Event('sessionExpired'));
+      return 'expired';
+    }
+    if (!res.ok) {
+      return 'error';
+    }
+    const data = await res.json();
+    if (data.session_token) saveSessionToken(data.session_token);
+    if (data.user?.id) {
+      const current = getCurrentUser();
+      saveUser({
+        id: data.user.id,
+        username: data.user.username ?? '',
+        email: data.user.email ?? '',
+        avatar: data.user.avatar,
+        subscribed: current?.subscribed ?? false,
+      });
+    }
+    return 'ok';
+  } catch {
+    return 'error';
+  }
+}
+
+export { SESSION_REFRESH_MS };
+
 /* =========================
    Subscription
 ========================= */

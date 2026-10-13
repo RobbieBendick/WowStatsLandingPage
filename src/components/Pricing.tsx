@@ -65,6 +65,10 @@ export default function Pricing() {
   const [loading, setLoading] = useState(false);
 
   const handleSubscribe = async (option: PricingOption) => {
+    if (loading || isSubscribed) {
+      return;
+    }
+
     try {
       setLoading(true);
 
@@ -114,7 +118,11 @@ export default function Pricing() {
       redirectToCheckout(checkoutUrl);
     } catch (error) {
       console.error('Subscription error:', error);
-      alert('Failed to start subscription. Please try again.');
+      alert(
+        error instanceof Error
+          ? error.message
+          : 'Failed to start subscription. Please try again.',
+      );
     } finally {
       setLoading(false);
     }
