@@ -16,10 +16,13 @@ export default function CTA() {
     <section id='contact' className='cta-section'>
       <div className='container'>
         <div className='cta-content'>
-          <h2>Ready to Get Started?</h2>
-          <p>Join thousands of players already tracking their WoW statistics</p>
+          <h2>Download free. Climb smarter.</h2>
+          <p>
+            Start reviewing after every arena. Upgrade for death logs, timelines,
+            and auto recording.
+          </p>
           <p className='cta-note'>
-            We're actively improving{' '}
+            We&apos;re actively improving{' '}
             <span className='gradient-text'>WoWStats</span> and would love your
             feedback on{' '}
             <a

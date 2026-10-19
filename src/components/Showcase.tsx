@@ -1,374 +1,143 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-// Get base URL for GitHub Pages compatibility
 const baseUrl = import.meta.env.BASE_URL;
 
-// Dashboard screenshots with titles
-const dashboardViews = [
-  {
-    src: `${baseUrl}screenshots/dashboard/wowstats-dashboard-1.png`,
-    title: 'Main Dashboard Overview',
-  },
-  {
-    src: `${baseUrl}screenshots/dashboard/wowstats-dashboard-2.png`,
-    title: 'Performance Metrics',
-  },
-  {
-    src: `${baseUrl}screenshots/dashboard/wowstats-dashboard-3.png`,
-    title: 'Frequently Played Compositions',
-  },
-];
-
-// Detailed match analysis with titles
-const matchAnalysis = [
-  {
-    src: `${baseUrl}screenshots/match-pages/wowstats-recent-matches.png`,
-    title: 'Recent Matches',
-  },
-  {
-    src: `${baseUrl}screenshots/match-pages/wowstats-cc-timeline.png`,
-    title: 'Crowd Control Timeline',
-  },
-  {
-    src: `${baseUrl}screenshots/match-pages/wowstats-cc-timeline-hover.png`,
-    title: 'Hover Tooltip Analysis',
-  },
-  {
-    src: `${baseUrl}screenshots/match-pages/wowstats-cooldown-timeline.png`,
-    title: 'Cooldown Timeline',
-  },
-  {
-    src: `${baseUrl}screenshots/match-pages/wowstats-resisted-spells.png`,
-    title: 'Resisted Spells',
-  },
-  {
-    src: `${baseUrl}screenshots/match-pages/wowstats-death-log.png`,
-    title: 'Death Log Analysis',
-  },
-];
-
-// Spell statistics screenshots
-const spellStatsViews = [
-  {
-    src: `${baseUrl}screenshots/spell-stats/spell-stats-no-filters.png`,
-    title: 'Spell Statistics Overview',
-  },
-  {
-    src: `${baseUrl}screenshots/spell-stats/spell-stats-filters-top.png`,
-    title: 'Filters Active - Top View',
-  },
-  {
-    src: `${baseUrl}screenshots/spell-stats/spell-stats-filters-bottom.png`,
-    title: 'Filters Active - Bottom View',
-  },
-];
-
-// Matchup analysis (comps, matchups, etc.) — PNG by default; optional GIF on hover (modal always shows PNG)
-type MatchupImage = {
-  pngSrc: string;
-  gifSrc?: string;
-  title: string;
+type Shot = {
+  id: string;
+  label: string;
+  caption: string;
+  src: string;
 };
 
-const matchupAnalysis: MatchupImage[] = [
+const shots: Shot[] = [
   {
-    pngSrc: `${baseUrl}screenshots/matchup-analysis/your-comps.png`,
-    gifSrc: `${baseUrl}screenshots/matchup-analysis/your-comps-gif.gif`,
-    title: 'Your Compositions',
+    id: 'dashboard',
+    label: 'Dashboard',
+    caption:
+      'Win rates, partners, frequent opponents, the comps you play most, the comps you face, and map statistics. Everything you need for a clear picture of your climb.',
+    src: `${baseUrl}screenshots/dashboard/wowstats-dashboard-1.png`,
   },
   {
-    pngSrc: `${baseUrl}screenshots/matchup-analysis/opponent-comps.png`,
-    gifSrc: `${baseUrl}screenshots/matchup-analysis/opponent-comp-matches-gif.gif`,
-    title: 'Opponent Compositions',
+    id: 'recording',
+    label: 'Auto Recording',
+    caption:
+      'Pro records the arena for you, so the review is ready the moment you leave. No hotkeys, no missed games. Every match is captured and waiting.',
+    src: `${baseUrl}screenshots/replay-page.jpg`,
   },
-];
-
-const matchPages = matchAnalysis;
-// For modal: use GIF when available (matchup), else PNG
-const allImages: { src: string; title: string }[] = [
-  ...dashboardViews,
-  ...matchPages,
-  ...spellStatsViews,
-  ...matchupAnalysis.map(m => ({
-    src: m.gifSrc || m.pngSrc,
-    title: m.title,
-  })),
+  {
+    id: 'timeline',
+    label: 'Timeline',
+    caption:
+      'Every ability by every player, laid out across the whole match. Scrub CC, cooldowns, and key windows to see exactly how the fight turned.',
+    src: `${baseUrl}screenshots/timeline.png`,
+  },
+  {
+    id: 'matchups',
+    label: 'Matchups',
+    caption:
+      'See which compositions you win with, and which ones you lose to. Break down your record by bracket, partner, and enemy setup.',
+    src: `${baseUrl}screenshots/matchup-analysis/your-comps.png`,
+  },
+  {
+    id: 'death-log',
+    label: 'Death Log',
+    caption:
+      'Every damage and healing event leading up to a death, in order. Trace the last seconds of a kill so you know what actually finished the fight.',
+    src: `${baseUrl}screenshots/match-pages/wowstats-death-log.png`,
+  },
 ];
 
 export default function Showcase() {
-  const [selectedImage, setSelectedImage] = useState<{
-    src: string;
-    title: string;
-  } | null>(null);
-  const [currentIndex, setCurrentIndex] = useState<number>(-1);
-  const [hoveredMatchupIndex, setHoveredMatchupIndex] = useState<number | null>(
-    null,
-  );
-
-  const openModal = (image: { src: string; title: string }, index: number) => {
-    setSelectedImage(image);
-    setCurrentIndex(index);
-    document.body.style.overflow = 'hidden';
-  };
-
-  const closeModal = () => {
-    setSelectedImage(null);
-    setCurrentIndex(-1);
-    document.body.style.overflow = 'unset';
-  };
-
-  const navigateImage = (direction: 'prev' | 'next') => {
-    if (currentIndex === -1) return;
-
-    let newIndex = currentIndex;
-    if (direction === 'prev') {
-      newIndex = currentIndex > 0 ? currentIndex - 1 : allImages.length - 1;
-    } else {
-      newIndex = currentIndex < allImages.length - 1 ? currentIndex + 1 : 0;
-    }
-
-    setCurrentIndex(newIndex);
-    setSelectedImage(allImages[newIndex]);
-  };
+  const [selected, setSelected] = useState<Shot | null>(null);
 
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (!selectedImage) return;
+    if (!selected) return;
 
-      if (e.key === 'Escape') {
-        closeModal();
-      } else if (e.key === 'ArrowLeft') {
-        navigateImage('prev');
-      } else if (e.key === 'ArrowRight') {
-        navigateImage('next');
-      }
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setSelected(null);
     };
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [selectedImage, currentIndex]);
-
-  const handleImageClick = (image: { src: string; title: string }) => {
-    const index = allImages.findIndex(img => img.src === image.src);
-    openModal(image, index);
-  };
-
-  const handleMatchupImageClick = (image: MatchupImage) => {
-    const modalImage = {
-      src: image.gifSrc || image.pngSrc,
-      title: image.title,
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.body.style.overflow = '';
+      window.removeEventListener('keydown', onKeyDown);
     };
-    const index = allImages.findIndex(
-      img =>
-        img.title === image.title && img.src === (image.gifSrc || image.pngSrc),
-    );
-    openModal(modalImage, index >= 0 ? index : allImages.length - 1);
-  };
+  }, [selected]);
 
   return (
-    <>
-      <section id='showcase' className='showcase'>
-        <div className='container'>
-          <h2 className='section-title'>
-            See <span className='gradient-text'>WowStats</span> in Action
+    <section id='advanced-features' className='product-section is-story'>
+      <div className='container'>
+        <div className='product-intro'>
+          <p className='product-eyebrow'>Inside WowStats</p>
+          <h2 className='product-title'>
+            Everything you need after the arena ends
           </h2>
-          <p className='section-subtitle'>
-            Get a glimpse of the powerful features and beautiful interface
+          <p className='product-lead'>
+            One place for your history, matchups, and the tools that explain why
+            you won or lost.
           </p>
-
-          <div className='showcase-section'>
-            <h3 className='showcase-section-title'>Dashboard Views</h3>
-            <p className='showcase-section-subtitle'>
-              Comprehensive overview of your statistics and performance metrics
-            </p>
-            <div className='showcase-grid'>
-              {dashboardViews.map((image, index) => (
-                <div
-                  key={index}
-                  className='showcase-item'
-                  onClick={() => handleImageClick(image)}
-                >
-                  <div className='showcase-overlay'>
-                    <span className='showcase-overlay-text'>{image.title}</span>
-                    <span className='showcase-overlay-icon'>🔍</span>
-                    <span className='showcase-overlay-text'>Click to View</span>
-                  </div>
-                  <img
-                    src={image.src}
-                    alt={image.title}
-                    className='showcase-image'
-                    loading='lazy'
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className='showcase-section'>
-            <h3 className='showcase-section-title'>Match Analysis Pages</h3>
-            <p className='showcase-section-subtitle'>
-              Detailed breakdowns including match overview, Crowd Control
-              timelines, spell analysis, death logs, and more
-            </p>
-            <div className='showcase-grid'>
-              {matchPages.map((image, index) => (
-                <div
-                  key={index}
-                  className='showcase-item'
-                  onClick={() => handleImageClick(image)}
-                >
-                  <div className='showcase-overlay'>
-                    <span className='showcase-overlay-text'>{image.title}</span>
-                    <span className='showcase-overlay-icon'>🔍</span>
-                    <span className='showcase-overlay-text'>Click to View</span>
-                  </div>
-                  <img
-                    src={image.src}
-                    alt={image.title}
-                    className='showcase-image'
-                    loading='lazy'
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className='showcase-section'>
-            <h3 className='showcase-section-title'>Spell Statistics</h3>
-            <p className='showcase-section-subtitle'>
-              Break down all of your crits, resists, and misses from your
-              perspective or from your opponent’s abilities used against you
-              across every game, with advanced filters
-            </p>
-            <div className='showcase-grid'>
-              {spellStatsViews.map((image, index) => (
-                <div
-                  key={index}
-                  className='showcase-item'
-                  onClick={() => handleImageClick(image)}
-                >
-                  <div className='showcase-overlay'>
-                    <span className='showcase-overlay-text'>{image.title}</span>
-                    <span className='showcase-overlay-icon'>🔍</span>
-                    <span className='showcase-overlay-text'>Click to View</span>
-                  </div>
-                  <img
-                    src={image.src}
-                    alt={image.title}
-                    className='showcase-image'
-                    loading='lazy'
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className='showcase-section'>
-            <h3 className='showcase-section-title'>Matchup Analysis</h3>
-            <p className='showcase-section-subtitle'>
-              Compare compositions and analyze matchups at a glance
-            </p>
-            <div className='showcase-grid'>
-              {matchupAnalysis.map((image, index) => {
-                const isGifOnly =
-                  image.pngSrc.endsWith('.gif') && !image.gifSrc;
-                const isHovered = hoveredMatchupIndex === index;
-                const showGif = isHovered && (image.gifSrc || isGifOnly);
-                return (
-                  <div
-                    key={index}
-                    className='showcase-item showcase-item-matchup'
-                    onClick={() => handleMatchupImageClick(image)}
-                    onMouseEnter={() => setHoveredMatchupIndex(index)}
-                    onMouseLeave={() => setHoveredMatchupIndex(null)}
-                  >
-                    <div className='showcase-overlay'>
-                      <span className='showcase-overlay-text'>
-                        {image.title}
-                      </span>
-                      <span className='showcase-overlay-icon'>🔍</span>
-                      <span className='showcase-overlay-text'>
-                        Click to View
-                      </span>
-                    </div>
-                    {(image.gifSrc || isGifOnly) && !isHovered && (
-                      <span className='showcase-gif-badge' aria-hidden>
-                        Hover to play
-                      </span>
-                    )}
-                    {!isGifOnly && (
-                      <img
-                        src={image.pngSrc}
-                        alt={image.title}
-                        className='showcase-image showcase-image-png'
-                        loading='lazy'
-                      />
-                    )}
-                    {isGifOnly && !showGif && (
-                      <div className='showcase-image showcase-image-placeholder'>
-                        Hover to preview
-                      </div>
-                    )}
-                    {showGif && (
-                      <img
-                        src={image.gifSrc || image.pngSrc}
-                        alt={`${image.title} (animated)`}
-                        className={`showcase-image showcase-image-gif ${
-                          isGifOnly ? 'showcase-image-gif-standalone' : ''
-                        }`}
-                        loading='eager'
-                      />
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
         </div>
-      </section>
 
-      {selectedImage && (
-        <div className='image-modal' onClick={closeModal}>
+        <div className='product-story'>
+          {shots.map((shot, index) => (
+            <article
+              key={shot.id}
+              className={`story-band ${index % 2 === 1 ? 'reverse' : ''}`}
+            >
+              <button
+                type='button'
+                className='story-media'
+                onClick={() => setSelected(shot)}
+                aria-label={`Enlarge ${shot.label}`}
+              >
+                <img src={shot.src} alt='' loading='lazy' />
+              </button>
+              <div className='story-copy'>
+                <p className='story-index'>
+                  {String(index + 1).padStart(2, '0')}
+                </p>
+                <h3>{shot.label}</h3>
+                <p>{shot.caption}</p>
+                <button
+                  type='button'
+                  className='story-link'
+                  onClick={() => setSelected(shot)}
+                >
+                  View screenshot
+                </button>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+
+      {selected && (
+        <div className='image-modal' onClick={() => setSelected(null)}>
           <button
+            type='button'
             className='modal-close'
-            onClick={e => {
-              e.stopPropagation();
-              closeModal();
+            onClick={event => {
+              event.stopPropagation();
+              setSelected(null);
             }}
-            aria-label='Close modal'
+            aria-label='Close'
           >
             ×
           </button>
-          <button
-            className='modal-nav modal-nav-prev'
-            onClick={e => {
-              e.stopPropagation();
-              navigateImage('prev');
-            }}
-            aria-label='Previous image'
+          <div
+            className='modal-content'
+            onClick={event => event.stopPropagation()}
           >
-            ‹
-          </button>
-          <button
-            className='modal-nav modal-nav-next'
-            onClick={e => {
-              e.stopPropagation();
-              navigateImage('next');
-            }}
-            aria-label='Next image'
-          >
-            ›
-          </button>
-          <div className='modal-content' onClick={e => e.stopPropagation()}>
-            <p className='modal-title'>{selectedImage.title}</p>
+            <p className='modal-title'>{selected.label}</p>
             <img
-              src={selectedImage.src}
-              alt={selectedImage.title}
+              src={selected.src}
+              alt={selected.caption}
               className='modal-image'
             />
           </div>
         </div>
       )}
-    </>
+    </section>
   );
 }

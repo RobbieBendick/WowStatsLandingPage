@@ -17,7 +17,7 @@ const footerSections: FooterSection[] = [
   {
     title: 'WowStats',
     description:
-      'By WoW PvPers, for WoW PvPers. Your ultimate Arena statistics tracker.',
+      'Every arena match, broken down. Built by multi-R1 arena players.',
   },
   {
     title: 'Product',
@@ -28,20 +28,10 @@ const footerSections: FooterSection[] = [
     ],
   },
   {
-    title: 'Support',
+    title: 'Community',
     links: [
       {
-        label: 'Help Center',
-        href: 'https://discord.gg/gjvQKPWgEn',
-        isExternal: true,
-      },
-      {
-        label: 'Contact',
-        href: 'https://discord.gg/gjvQKPWgEn',
-        isExternal: true,
-      },
-      {
-        label: 'Privacy',
+        label: 'Discord',
         href: 'https://discord.gg/gjvQKPWgEn',
         isExternal: true,
       },
@@ -132,8 +122,9 @@ export default function Footer() {
         </div>
         <div className='footer-bottom'>
           <p>
-            &copy; 2024 <span className='gradient-text'>WowStats</span>. All
-            rights reserved.
+            &copy; {new Date().getFullYear()}{' '}
+            <span className='gradient-text'>WowStats</span>. All rights
+            reserved.
           </p>
         </div>
       </div>

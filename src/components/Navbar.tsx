@@ -106,9 +106,6 @@ export default function Navbar() {
             >
               Features
             </a>
-            <a href='#about' onClick={e => handleScroll(e, '#about')}>
-              About
-            </a>
             <a href='#pricing' onClick={e => handleScroll(e, '#pricing')}>
               Pricing
             </a>
