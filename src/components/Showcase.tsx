@@ -15,7 +15,7 @@ const shots: Shot[] = [
     label: 'Dashboard',
     caption:
       'Win rates, partners, frequent opponents, the comps you play most, the comps you face, and map statistics. Everything you need for a clear picture of your climb.',
-    src: `${baseUrl}screenshots/dashboard/wowstats-dashboard-1.png`,
+    src: `${baseUrl}screenshots/dashboard/wowstats-dashboard.png`,
   },
   {
     id: 'recording',
